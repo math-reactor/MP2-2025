@@ -1,0 +1,50 @@
+package ch.epfl.cs107.icmaze.area.maps;
+
+import ch.epfl.cs107.icmaze.MazeGenerator;
+import ch.epfl.cs107.icmaze.actor.Rock;
+import ch.epfl.cs107.icmaze.area.ICMazeArea;
+import ch.epfl.cs107.play.math.DiscreteCoordinates;
+
+public abstract class MazeArea extends ICMazeArea {
+    //private AreaPortals entrance;
+    protected int exitKey;
+    private int difficulty;
+    public MazeArea(int setExitKey, int setDiff, String name){
+        super(name);
+        super.createGraph();
+        exitKey = setExitKey;
+        difficulty = setDiff;
+    }
+    public void createArea(){
+        int[][] template = MazeGenerator.createMaze(getWidth()-2, getHeight()-2, difficulty);
+        int add = 0;
+        for (int row = 1; row < getHeight()-1; row++){
+            add += 1;
+            for (int col = 1; col < getWidth()-1; col++){
+                if (template[row-1][col-1] == 1){
+                    addItem(new Rock(this, new DiscreteCoordinates(col,row)));
+                }
+                else{
+                    createNode(template, row, col);
+                }
+            }
+        }
+    }
+    private void createNode(int[][] grid, int row, int col){
+        boolean right = true;
+        boolean left = true;
+        boolean down = true;
+        boolean up = true;
+        if (col == 0){
+            left = false;
+        } else if (col == grid[0].length-1) {
+            right = false;
+        }
+        if (row == 0){
+            up = false;
+        } else if (row == grid.length-1) {
+            down = false;
+        }
+        super.createNode(row, col, up, left, down, right);
+    }
+}
