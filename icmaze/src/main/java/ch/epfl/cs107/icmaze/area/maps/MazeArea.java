@@ -47,6 +47,8 @@ public abstract class MazeArea extends ICMazeArea {
     }
 
     public void makePointWalkable(DiscreteCoordinates coords){
+        mazeGrid[coords.y][coords.x] = 0;
+        System.out.println(super.getNodeSize());
         setupNode(mazeGrid, coords.y, coords.x);
     }
 
@@ -55,14 +57,16 @@ public abstract class MazeArea extends ICMazeArea {
         boolean left = true;
         boolean down = true;
         boolean up = true;
-        if (col == 0 || grid[row-1][col] == 1){
+        if (col == 1 || (col != 1 && grid[row-1][col-2] == 1)){
             left = false;
-        } else if (col == grid[0].length-1 || grid[row+1][col] == 1) {
+        }
+        if (col == grid[0].length || (col != grid[0].length && grid[row-1][col] == 1)) {
             right = false;
         }
-        if (row == 0 || grid[row][col+1] == 1){
+        if (row == grid.length || (row != grid.length &&grid[row][col-1] == 1)){
             up = false;
-        } else if (row == grid.length-1 || grid[row][col-1] == 1) {
+        }
+        if (row == 1 || (row != 1 && grid[row-2][col-1] == 1)) {
             down = false;
         }
         super.createNode(row, col, up, left, down, right);

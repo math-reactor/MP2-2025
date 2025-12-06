@@ -96,8 +96,6 @@ public abstract class ICMazeArea extends Area {
                 case E -> mainCell = new DiscreteCoordinates(size-1, size / 2-1);
                 default -> throw new IllegalStateException();
             }
-
-
             Orientation spriteOrientation = ap.getOrientation();
 
             String destAreaName = null;
@@ -144,6 +142,7 @@ public abstract class ICMazeArea extends Area {
             purgeAreaCellsFrom((Interactable) runThrough.get(i));
         }
     }
+    protected int getNodeSize(){return graph.keySet().size();}
     protected void createGraph(){
         graph = new AreaGraph();
     }
