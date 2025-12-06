@@ -47,7 +47,6 @@ public abstract class MazeArea extends ICMazeArea {
     }
 
     public void makePointWalkable(DiscreteCoordinates coords){
-        System.out.println(super.getNodeSize());
         setupNode(mazeGrid, coords.y, coords.x);
     }
 
