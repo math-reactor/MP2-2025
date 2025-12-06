@@ -3,6 +3,7 @@ package ch.epfl.cs107.icmaze.actor;
 import ch.epfl.cs107.icmaze.RandomGenerator;
 import ch.epfl.cs107.icmaze.actor.collectable.Heart;
 import ch.epfl.cs107.icmaze.area.ICMazeArea;
+import ch.epfl.cs107.icmaze.area.maps.MazeArea;
 import ch.epfl.cs107.icmaze.handler.ICMazeInteractionVisitor;
 import ch.epfl.cs107.play.areagame.actor.AreaEntity;
 import ch.epfl.cs107.play.areagame.actor.Interactable;
@@ -22,9 +23,8 @@ import java.util.List;
 public class Rock extends AreaEntity {
     private final int ANIMATION_DURATION = 24;
     private Sprite UI;
-    private int Health = 2;
+    private int Health = 3;
     private Animation poof;
-    private boolean canAttack;
     private boolean destroyed = false;
     public Rock(Area area, DiscreteCoordinates pos){
         super(area, Orientation.DOWN, pos);
@@ -37,11 +37,18 @@ public class Rock extends AreaEntity {
         setCurrentPosition(position.toVector());
     }
     public void damage(){
-        canAttack = false;
         Health -= 1;
     }
-    public boolean canBeAttacked() {
-        return canAttack;
+    private void handleRockDestruction(){
+        destroyed = true;
+        DiscreteCoordinates coords = getCurrentMainCellCoordinates();
+        ((MazeArea) getOwnerArea()).makePointWalkable(coords);
+        getOwnerArea().purgeAreaCellsFrom(this);
+        ((ICMazeArea) getOwnerArea()).removeItem(this);
+        int randVal = RandomGenerator.rng.nextInt(3);
+        if (randVal == 0){
+            ((ICMazeArea) getOwnerArea()).replaceWallByHeart(coords);
+        }
     }
 
     @Override
@@ -54,14 +61,7 @@ public class Rock extends AreaEntity {
                 poof.draw(canvas);
             }
             if (poof.isCompleted() && !destroyed){
-                destroyed = true;
-                DiscreteCoordinates coords = getCurrentMainCellCoordinates();
-                getOwnerArea().purgeAreaCellsFrom(this);
-                ((ICMazeArea) getOwnerArea()).removeItem(this);
-                int randVal = RandomGenerator.rng.nextInt(3);
-                if (randVal == 0){
-                    ((ICMazeArea) getOwnerArea()).replaceWallByHeart(coords);
-                }
+                handleRockDestruction();
             }
         }
     }
@@ -93,6 +93,5 @@ public class Rock extends AreaEntity {
     @Override
     public void acceptInteraction(AreaInteractionVisitor v, boolean isCellInteraction) {
         ((ICMazeInteractionVisitor) v).interactWith(this, isCellInteraction);
-        canAttack = true;
     }
 }

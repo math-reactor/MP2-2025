@@ -14,6 +14,7 @@ public class MediumArea extends MazeArea {
         //sets up the different sprites
         super.createArea();
         super.randomKey(exitKey-1);
+        //Portal setup
         Portal westMAPortal = getPortal(AreaPortals.W);
         westMAPortal.setState(PortalState.OPEN);
         westMAPortal.setDestinationCoordinates(AreaPortals.W, "SmallArea");

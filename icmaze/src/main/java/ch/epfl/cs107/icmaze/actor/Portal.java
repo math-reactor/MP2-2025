@@ -137,6 +137,7 @@ public class Portal extends AreaEntity{
                 case OPEN -> sprites[2];
             };
             s.draw(canvas);
+
         }
     }
 }

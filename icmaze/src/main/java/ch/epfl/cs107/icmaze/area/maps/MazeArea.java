@@ -9,6 +9,7 @@ public abstract class MazeArea extends ICMazeArea {
     //private AreaPortals entrance;
     protected int exitKey;
     private int difficulty;
+    private int[][] mazeGrid;
     public MazeArea(int setExitKey, int setDiff, String name){
         super(name);
         super.createGraph();
@@ -16,16 +17,16 @@ public abstract class MazeArea extends ICMazeArea {
         difficulty = setDiff;
     }
     public void createArea(){
-        int[][] template = MazeGenerator.createMaze(getWidth()-2, getHeight()-2, difficulty);
+        mazeGrid = MazeGenerator.createMaze(getWidth()-2, getHeight()-2, difficulty);
         int add = 0;
         for (int row = 1; row < getHeight()-1; row++){
             add += 1;
             for (int col = 1; col < getWidth()-1; col++){
-                if (template[row-1][col-1] == 1 && !checkAtEntrance(new DiscreteCoordinates(col,row))){
+                if (mazeGrid[row-1][col-1] == 1 && !checkAtEntrance(new DiscreteCoordinates(col,row))){
                     addItem(new Rock(this, new DiscreteCoordinates(col,row)));
                 }
                 else{
-                    createNode(template, row, col);
+                    setupNode(mazeGrid, row, col);
                 }
             }
         }
@@ -44,19 +45,24 @@ public abstract class MazeArea extends ICMazeArea {
         }
         return isAtEntrance;
     }
-    private void createNode(int[][] grid, int row, int col){
+
+    public void makePointWalkable(DiscreteCoordinates coords){
+        setupNode(mazeGrid, coords.y, coords.x);
+    }
+
+    private void setupNode(int[][] grid, int row, int col){
         boolean right = true;
         boolean left = true;
         boolean down = true;
         boolean up = true;
-        if (col == 0){
+        if (col == 0 || grid[row-1][col] == 1){
             left = false;
-        } else if (col == grid[0].length-1) {
+        } else if (col == grid[0].length-1 || grid[row+1][col] == 1) {
             right = false;
         }
-        if (row == 0){
+        if (row == 0 || grid[row][col+1] == 1){
             up = false;
-        } else if (row == grid.length-1) {
+        } else if (row == grid.length-1 || grid[row][col-1] == 1) {
             down = false;
         }
         super.createNode(row, col, up, left, down, right);

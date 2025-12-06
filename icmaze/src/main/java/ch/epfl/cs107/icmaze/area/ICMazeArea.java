@@ -158,7 +158,7 @@ public abstract class ICMazeArea extends Area {
     }
 
     public void replaceWallByHeart(DiscreteCoordinates position){
-        Heart newH = new Heart(this, position, 24);
+        Heart newH = new Heart(this, position);
         addItem(newH);
     }
     /**

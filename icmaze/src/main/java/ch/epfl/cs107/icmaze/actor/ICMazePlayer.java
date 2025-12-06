@@ -172,7 +172,7 @@ public class ICMazePlayer extends ICMazeActor implements Interactor {
             }
         };
         public void interactWith(Rock rock, boolean isCellInteraction){
-            if (!isCellInteraction && rock.canBeAttacked()){
+            if (!isCellInteraction){
                 rock.damage();
             }
         };
