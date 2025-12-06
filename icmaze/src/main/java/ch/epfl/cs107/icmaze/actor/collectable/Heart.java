@@ -17,6 +17,7 @@ public class Heart extends Consumable  {
     }
     @Override
     public void draw(Canvas canvas) {
+        if (!isCollected())
         super.draw(canvas);
     }
     public void acceptInteraction(AreaInteractionVisitor v, boolean isCellInteraction) {

@@ -1,5 +1,7 @@
 package ch.epfl.cs107.icmaze.area.maps;
 
+import ch.epfl.cs107.icmaze.actor.Portal;
+import ch.epfl.cs107.icmaze.actor.PortalState;
 import ch.epfl.cs107.icmaze.actor.Rock;
 import ch.epfl.cs107.icmaze.actor.collectable.Heart;
 import ch.epfl.cs107.icmaze.actor.collectable.Key;
@@ -9,6 +11,7 @@ import ch.epfl.cs107.play.engine.actor.Background;
 import ch.epfl.cs107.play.engine.actor.Foreground;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.math.Orientation;
+import ch.epfl.cs107.play.window.Canvas;
 
 import java.util.ArrayList;
 
@@ -19,11 +22,18 @@ public class Spawn extends ICMazeArea {
     public void createArea(){
         registerActor(new Background(this, name));
         //sets up the different sprites
-        addItem(new Pickaxe(this, Orientation.DOWN, new DiscreteCoordinates(5,4)));
-        addItem(new Heart(this, new DiscreteCoordinates(4,5), 24));
-        addItem(new Key(this, Orientation.DOWN, new DiscreteCoordinates(6,5), Integer.MAX_VALUE));
-        addItem(new Key(this, Orientation.DOWN, new DiscreteCoordinates(1,2), Integer.MAX_VALUE-1));
-        addItem(new Rock(this, new DiscreteCoordinates(3,2)));
+        super.addItem(new Pickaxe(this, Orientation.DOWN, new DiscreteCoordinates(5,4)));
+        super.addItem(new Heart(this, new DiscreteCoordinates(4,5), 24));
+        super.addItem(new Key(this, Orientation.DOWN, new DiscreteCoordinates(6,5), Integer.MAX_VALUE));
+        Portal spawnPort = getPortal(AreaPortals.E);
+        spawnPort.setState(PortalState.LOCKED);
+        spawnPort.setDestinationCoordinates(AreaPortals.E, "SmallArea");
+
+        spawnPort.setDestinationArea("ICMaze/SmallArea["+Integer.MAX_VALUE+"]");
     }
     public String getTitle(){return "ICMaze/Spawn";}
+    @Override
+    public void draw(Canvas canvas) {
+        super.draw(canvas);
+    }
 }

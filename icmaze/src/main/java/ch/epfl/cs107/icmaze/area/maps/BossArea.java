@@ -1,10 +1,12 @@
 package ch.epfl.cs107.icmaze.area.maps;
 
 import ch.epfl.cs107.icmaze.actor.Portal;
+import ch.epfl.cs107.icmaze.actor.PortalState;
 import ch.epfl.cs107.icmaze.area.ICMazeArea;
 import ch.epfl.cs107.play.engine.actor.Background;
 import ch.epfl.cs107.play.engine.actor.Foreground;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
+import ch.epfl.cs107.play.window.Canvas;
 
 
 public class BossArea extends ICMazeArea {
@@ -13,16 +15,16 @@ public class BossArea extends ICMazeArea {
     }
     public void createArea(){
         registerActor(new Background(this, name));
-        //Portal westPortal = getPortal(AreaPortals.W);
+        Portal bossPort = getPortal(AreaPortals.W);
+        bossPort.setState(PortalState.OPEN);
+        bossPort.setDestinationCoordinates(AreaPortals.W, "LargeArea");
 
-        //westPortal.setDestinationArea("SpawnArea");
-
-        //westPortal.setDestinationCoordinates(
-                //new DiscreteCoordinates(8, 4)
-        //);
-
-        //westPortal.setState(PortalState.OPEN);
-
+        bossPort.setDestinationArea("ICMaze/LargeArea["+(Integer.MAX_VALUE-2)+"]");
     }
     public String getTitle(){return "ICMaze/Boss";}
+
+    @Override
+    public void draw(Canvas canvas) {
+        super.draw(canvas);
+    }
 }

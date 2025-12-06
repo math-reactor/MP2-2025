@@ -1,10 +1,8 @@
 package ch.epfl.cs107.icmaze.area;
 
-import ch.epfl.cs107.icmaze.handler.ICMazeInteractionVisitor;
 import ch.epfl.cs107.play.areagame.actor.Interactable;
 import ch.epfl.cs107.play.areagame.area.AreaBehavior;
 import ch.epfl.cs107.play.areagame.handler.AreaInteractionVisitor;
-import ch.epfl.cs107.play.engine.actor.Entity;
 import ch.epfl.cs107.play.window.Window;
 
 public class ICMazeBehaviour extends AreaBehavior {
@@ -42,6 +40,7 @@ public class ICMazeBehaviour extends AreaBehavior {
             super(x, y);
             nature = type;
         }
+
         public boolean canLeave(Interactable inter){
             return true;
         }

@@ -44,7 +44,6 @@ public class Play {
 
 				// Run until the user try to close the window
 				while (!window.isCloseRequested()) {
-
 					// Compute time interval
                     lastTime = currentTime;
                     currentTime = System.nanoTime();

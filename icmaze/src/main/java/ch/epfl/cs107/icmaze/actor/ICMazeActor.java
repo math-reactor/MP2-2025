@@ -13,14 +13,18 @@ import java.util.Collections;
 import java.util.List;
 
 public abstract class ICMazeActor extends MovableAreaEntity implements Interactable {
+    private String parentArea;
     public ICMazeActor(Area setArea, Orientation setOrient, DiscreteCoordinates setCoords){
         super(setArea, setOrient, setCoords);
+        parentArea = setArea.getTitle();
     }
     public void enterArea(Area area, DiscreteCoordinates position){
         area.registerActor(this);
         setCurrentPosition(position.toVector());
         resetMotion();
+        setOwnerArea(area);
     }
+    public String getParentArea(){return parentArea;}
     public void exitArea(){
         getOwnerArea().unregisterActor(this);
     }

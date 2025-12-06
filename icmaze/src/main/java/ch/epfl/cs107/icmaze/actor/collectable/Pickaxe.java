@@ -16,6 +16,7 @@ public class Pickaxe extends Equipment  {
         setUI(new Sprite("icmaze/pickaxe", .75f, .75f, this));
     }
     public void draw(Canvas canvas){
+        if (!isCollected())
         super.draw(canvas);
     }
     public void acceptInteraction(AreaInteractionVisitor v, boolean isCellInteraction) {

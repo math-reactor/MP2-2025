@@ -21,7 +21,7 @@ public abstract class MazeArea extends ICMazeArea {
         for (int row = 1; row < getHeight()-1; row++){
             add += 1;
             for (int col = 1; col < getWidth()-1; col++){
-                if (template[row-1][col-1] == 1){
+                if (template[row-1][col-1] == 1 && !checkAtEntrance(new DiscreteCoordinates(col,row))){
                     addItem(new Rock(this, new DiscreteCoordinates(col,row)));
                 }
                 else{
@@ -29,6 +29,20 @@ public abstract class MazeArea extends ICMazeArea {
                 }
             }
         }
+    }
+    private boolean checkAtEntrance(DiscreteCoordinates wallTile){
+        boolean isAtEntrance = false;
+        for (AreaPortals orient : AreaPortals.values()){
+            DiscreteCoordinates arrivalTile = new DiscreteCoordinates(0,0);
+            switch(orient){
+                case AreaPortals.N -> arrivalTile = new DiscreteCoordinates(getWidth() / 2, 1);
+                case AreaPortals.S -> arrivalTile = new DiscreteCoordinates(getWidth() / 2, getHeight() - 2);
+                case AreaPortals.W -> arrivalTile = new DiscreteCoordinates(getWidth() - 2, getHeight() / 2);
+                case AreaPortals.E -> arrivalTile = new DiscreteCoordinates(1, getHeight() / 2);
+            }
+            isAtEntrance = arrivalTile.equals(wallTile);
+        }
+        return isAtEntrance;
     }
     private void createNode(int[][] grid, int row, int col){
         boolean right = true;

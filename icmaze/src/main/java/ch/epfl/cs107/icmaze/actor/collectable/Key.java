@@ -19,6 +19,7 @@ public class Key extends Equipment {
     }
     public int getID(){return ID;}
     public void draw(Canvas canvas){
+        if (!isCollected())
         super.draw(canvas);
     }
     public void acceptInteraction(AreaInteractionVisitor v, boolean isCellInteraction) {
