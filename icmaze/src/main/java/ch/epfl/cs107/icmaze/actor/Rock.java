@@ -79,7 +79,7 @@ public class Rock extends AreaEntity {
     }
     @Override
     public boolean takeCellSpace() {
-        return Health > 0;
+        return !destroyed;
     }
     @Override
     public boolean isCellInteractable() {

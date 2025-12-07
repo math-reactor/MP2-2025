@@ -14,16 +14,6 @@ public class MediumArea extends MazeArea {
         //sets up the different sprites
         super.createArea();
         super.randomKey(exitKey-1);
-        //Portal setup
-        Portal westMAPortal = getPortal(AreaPortals.W);
-        westMAPortal.setState(PortalState.OPEN);
-        westMAPortal.setDestinationCoordinates(AreaPortals.W, "SmallArea");
-        Portal eastMAPortal = getPortal(AreaPortals.E);
-        eastMAPortal.setState(PortalState.LOCKED);
-        eastMAPortal.setDestinationCoordinates(AreaPortals.E, "LargeArea");
-
-        westMAPortal.setDestinationArea("ICMaze/SmallArea["+(exitKey+1)+"]");
-        eastMAPortal.setDestinationArea("ICMaze/LargeArea["+(exitKey-1)+"]");
     }
     public String getTitle(){return "ICMaze/MediumArea["+exitKey+"]";}
 }

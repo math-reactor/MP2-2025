@@ -3,6 +3,7 @@ package ch.epfl.cs107.icmaze.area;
 import ch.epfl.cs107.icmaze.RandomGenerator;
 import ch.epfl.cs107.icmaze.actor.ICMazeActor;
 import ch.epfl.cs107.icmaze.actor.Portal;
+import ch.epfl.cs107.icmaze.actor.PortalState;
 import ch.epfl.cs107.icmaze.actor.collectable.Heart;
 import ch.epfl.cs107.icmaze.actor.collectable.Key;
 import ch.epfl.cs107.icmaze.actor.collectable.Pickaxe;
@@ -34,6 +35,15 @@ public abstract class ICMazeArea extends Area {
     private AreaGraph graph;
     protected String name;
     private int size;
+
+    //portal information
+    private String nextArea;
+    private String nextAreaSize;
+    private AreaPortals nextDir;
+    private String prevArea;
+    private String prevAreaSize;
+    private AreaPortals prevDir;
+
 
     public ICMazeArea(String setName){
         runThrough = new ArrayList<>();
@@ -86,6 +96,18 @@ public abstract class ICMazeArea extends Area {
         return portals[direction.ordinal()];
     }
 
+    public void setPreviousPortal(String setPrevAreaSize, String setPrevArea, AreaPortals setPrevDir){
+        prevAreaSize = setPrevAreaSize;
+        prevArea = setPrevArea;
+        prevDir = setPrevDir;
+    }
+
+    public void setNextPortal(String setNextAreaSize, String setNextArea, AreaPortals setNextDir){
+        nextAreaSize = setNextAreaSize;
+        nextArea = setNextArea;
+        nextDir = setNextDir;
+    }
+
     private void initPortals() {
         for (AreaPortals ap : AreaPortals.values()) {
             DiscreteCoordinates mainCell;
@@ -103,6 +125,19 @@ public abstract class ICMazeArea extends Area {
             DiscreteCoordinates defaultSpawn = new DiscreteCoordinates(1,1);
 
             Portal portal = new Portal(this, spriteOrientation, mainCell, destAreaName, defaultSpawn, keyId);
+            if (ap == nextDir || ap == prevDir){
+                if (ap == prevDir){
+                    portal.setState(PortalState.OPEN);
+                    portal.setDestinationCoordinates(prevDir, prevAreaSize);
+                    portal.setDestinationArea(prevArea);
+                }
+                else {
+                    portal.setState(PortalState.LOCKED);
+                    portal.setDestinationCoordinates(nextDir, nextAreaSize);
+                    portal.setDestinationArea(nextArea);
+                }
+            }
+
 
             portals[ap.ordinal()] = portal;
             addItem(portal);
@@ -142,6 +177,7 @@ public abstract class ICMazeArea extends Area {
             purgeAreaCellsFrom((Interactable) runThrough.get(i));
         }
     }
+    public String getName(){return name;}
     protected int getNodeSize(){return graph.keySet().size();}
     protected void createGraph(){
         graph = new AreaGraph();

@@ -84,8 +84,8 @@ public class Portal extends AreaEntity{
         DiscreteCoordinates arrival;
         int size = Size.getSize(nextAreaSize);
         switch (direction) {
-            case N -> arrival = new DiscreteCoordinates(size / 2, 1);
-            case S -> arrival = new DiscreteCoordinates(size / 2, size );
+            case N -> arrival = new DiscreteCoordinates(size / 2 + 1, 1);
+            case S -> arrival = new DiscreteCoordinates(size / 2 + 1, size );
             case W -> arrival = new DiscreteCoordinates(size, size / 2+1);
             case E -> arrival = new DiscreteCoordinates(1, size / 2+1);
             default -> throw new IllegalStateException();
@@ -120,7 +120,7 @@ public class Portal extends AreaEntity{
 
     @Override
     public boolean isViewInteractable() {
-        return true;
+        return state == PortalState.LOCKED;
     }
 
     @Override

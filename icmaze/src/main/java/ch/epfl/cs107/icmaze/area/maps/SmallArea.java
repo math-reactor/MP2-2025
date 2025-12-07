@@ -22,16 +22,7 @@ public class SmallArea extends MazeArea {
         registerActor(new Background(this, name));
         //sets up the different sprites
         super.createArea();
-        super.randomKey(Integer.MAX_VALUE-1);
-        Portal westSAPortal = getPortal(AreaPortals.W);
-        westSAPortal.setState(PortalState.OPEN);
-        westSAPortal.setDestinationCoordinates(AreaPortals.W, "SmallArea");
-        Portal eastSAPortal = getPortal(AreaPortals.E);
-        eastSAPortal.setState(PortalState.LOCKED);
-        eastSAPortal.setDestinationCoordinates(AreaPortals.E, "MediumArea");
-
-        westSAPortal.setDestinationArea("ICMaze/Spawn");
-        eastSAPortal.setDestinationArea("ICMaze/MediumArea["+(Integer.MAX_VALUE-1)+"]");
+        super.randomKey(exitKey-1);
     }
     public String getTitle(){return "ICMaze/SmallArea["+exitKey+"]";}
 }

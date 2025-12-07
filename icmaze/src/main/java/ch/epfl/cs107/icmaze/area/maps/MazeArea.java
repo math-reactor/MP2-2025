@@ -10,6 +10,7 @@ public abstract class MazeArea extends ICMazeArea {
     protected int exitKey;
     private int difficulty;
     private int[][] mazeGrid;
+
     public MazeArea(int setExitKey, int setDiff, String name){
         super(name);
         super.createGraph();

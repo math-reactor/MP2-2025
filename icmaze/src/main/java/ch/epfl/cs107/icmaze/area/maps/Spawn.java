@@ -25,11 +25,6 @@ public class Spawn extends ICMazeArea {
         super.addItem(new Pickaxe(this, Orientation.DOWN, new DiscreteCoordinates(5,4)));
         super.addItem(new Heart(this, new DiscreteCoordinates(4,5)));
         super.addItem(new Key(this, Orientation.DOWN, new DiscreteCoordinates(6,5), Integer.MAX_VALUE));
-        Portal spawnPort = getPortal(AreaPortals.E);
-        spawnPort.setState(PortalState.LOCKED);
-        spawnPort.setDestinationCoordinates(AreaPortals.E, "SmallArea");
-
-        spawnPort.setDestinationArea("ICMaze/SmallArea["+Integer.MAX_VALUE+"]");
     }
     public String getTitle(){return "ICMaze/Spawn";}
     @Override

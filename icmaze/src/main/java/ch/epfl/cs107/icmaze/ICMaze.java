@@ -6,6 +6,7 @@ import ch.epfl.cs107.icmaze.actor.collectable.Heart;
 import ch.epfl.cs107.icmaze.actor.collectable.Key;
 import ch.epfl.cs107.icmaze.actor.collectable.Pickaxe;
 import ch.epfl.cs107.icmaze.area.ICMazeArea;
+import ch.epfl.cs107.icmaze.area.LevelGenerator;
 import ch.epfl.cs107.icmaze.area.maps.*;
 import ch.epfl.cs107.play.areagame.AreaGame;
 import ch.epfl.cs107.play.areagame.actor.Interactable;
@@ -21,17 +22,15 @@ import java.awt.geom.Area;
 
 public class ICMaze extends AreaGame {
     private ICMazePlayer player;
-    private void createAreas(){
-        addArea(new BossArea());
-        addArea(new Spawn());
-        addArea(new SmallArea(Integer.MAX_VALUE, Difficulty.HARDEST));
-        addArea(new MediumArea(Integer.MAX_VALUE-1, Difficulty.HARDEST));
-        addArea(new LargeArea(Integer.MAX_VALUE-2, Difficulty.HARDEST));
+    private void createAreas(ICMazeArea[] areas){
+        for (ICMazeArea area : areas){
+            addArea(area);
+        }
     }
     public Rock r;
     public boolean begin(Window window, FileSystem fileSystem){
         if (super.begin(window , fileSystem)) {
-            createAreas();
+            createAreas(LevelGenerator.generateLine(this, 8));
             setCurrentArea("ICMaze/Spawn", true);
             player = new ICMazePlayer(getCurrentArea(), Orientation.DOWN, new DiscreteCoordinates(5,5));
             player.enterArea(getCurrentArea(), new DiscreteCoordinates(5,5));

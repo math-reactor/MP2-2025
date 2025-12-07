@@ -10,19 +10,15 @@ import ch.epfl.cs107.play.window.Canvas;
 
 
 public class BossArea extends ICMazeArea {
+
     public BossArea(){
         super("SmallArea");
     }
     public void createArea(){
         registerActor(new Background(this, name));
-        Portal bossPort = getPortal(AreaPortals.W);
-        bossPort.setState(PortalState.OPEN);
-        bossPort.setDestinationCoordinates(AreaPortals.W, "LargeArea");
-
-        bossPort.setDestinationArea("ICMaze/LargeArea["+(Integer.MAX_VALUE-2)+"]");
     }
     public String getTitle(){return "ICMaze/Boss";}
-
+    public String getSize(){return "SmallArea";}
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
