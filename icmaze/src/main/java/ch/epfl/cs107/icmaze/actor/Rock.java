@@ -1,16 +1,13 @@
 package ch.epfl.cs107.icmaze.actor;
 
 import ch.epfl.cs107.icmaze.RandomGenerator;
-import ch.epfl.cs107.icmaze.actor.collectable.Heart;
 import ch.epfl.cs107.icmaze.area.ICMazeArea;
-import ch.epfl.cs107.icmaze.area.maps.MazeArea;
+import ch.epfl.cs107.icmaze.area.MazeArea;
 import ch.epfl.cs107.icmaze.handler.ICMazeInteractionVisitor;
 import ch.epfl.cs107.play.areagame.actor.AreaEntity;
-import ch.epfl.cs107.play.areagame.actor.Interactable;
 import ch.epfl.cs107.play.areagame.area.Area;
 import ch.epfl.cs107.play.areagame.handler.AreaInteractionVisitor;
 import ch.epfl.cs107.play.engine.actor.Animation;
-import ch.epfl.cs107.play.engine.actor.OrientedAnimation;
 import ch.epfl.cs107.play.engine.actor.Sprite;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.math.Orientation;
@@ -40,6 +37,7 @@ public class Rock extends AreaEntity {
         Health -= 1;
     }
     private void handleRockDestruction(){
+        //destroys the rock, and has a probability to give a heart
         destroyed = true;
         DiscreteCoordinates coords = getCurrentMainCellCoordinates();
         ((MazeArea) getOwnerArea()).makePointWalkable(coords);
@@ -56,10 +54,12 @@ public class Rock extends AreaEntity {
             UI.draw(canvas);
         }
         else{
+            //draws the destruction cloud
             if (!destroyed){
                 poof.draw(canvas);
             }
             if (poof.isCompleted() && !destroyed){
+                //clears the rock, when the cloud is gone
                 handleRockDestruction();
             }
         }

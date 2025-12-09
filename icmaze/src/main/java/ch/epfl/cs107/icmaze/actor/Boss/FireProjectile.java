@@ -78,7 +78,7 @@ public class FireProjectile extends BossProjectile implements Interactor {
         other.acceptInteraction(interactionHandler , isCellInteraction);
     }
     private class BossProjInteractionHandler implements ICMazeInteractionVisitor {
-        //gère les interactions entre le projectile et le joueur
+        //handles the interactions between the projectile and the player
         public void interactWith(ICMazePlayer player, boolean isCellInteraction){
             if (isCellInteraction){
                 hit(player);

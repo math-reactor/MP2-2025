@@ -1,8 +1,7 @@
-package ch.epfl.cs107.icmaze.area.maps;
+package ch.epfl.cs107.icmaze.area;
 
 import ch.epfl.cs107.icmaze.MazeGenerator;
 import ch.epfl.cs107.icmaze.actor.Rock;
-import ch.epfl.cs107.icmaze.area.ICMazeArea;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 
 public abstract class MazeArea extends ICMazeArea {

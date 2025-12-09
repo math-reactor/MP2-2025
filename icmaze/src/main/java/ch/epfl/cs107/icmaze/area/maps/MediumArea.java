@@ -1,8 +1,6 @@
 package ch.epfl.cs107.icmaze.area.maps;
 
-import ch.epfl.cs107.icmaze.Difficulty;
-import ch.epfl.cs107.icmaze.actor.Portal;
-import ch.epfl.cs107.icmaze.actor.PortalState;
+import ch.epfl.cs107.icmaze.area.MazeArea;
 import ch.epfl.cs107.play.engine.actor.Background;
 
 public class MediumArea extends MazeArea {

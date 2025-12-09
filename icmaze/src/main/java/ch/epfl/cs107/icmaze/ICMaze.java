@@ -30,7 +30,8 @@ public class ICMaze extends AreaGame {
     public Rock r;
     public boolean begin(Window window, FileSystem fileSystem){
         if (super.begin(window , fileSystem)) {
-            createAreas(LevelGenerator.generateLine(this, 3));
+            //Initializes the playing field
+            createAreas(LevelGenerator.generateLine(this, 6));
             setCurrentArea("ICMaze/Spawn", true);
             player = new ICMazePlayer(getCurrentArea(), Orientation.DOWN, new DiscreteCoordinates(5,5));
             player.enterArea(getCurrentArea(), new DiscreteCoordinates(5,5));
@@ -47,6 +48,7 @@ public class ICMaze extends AreaGame {
     }
 
     public void switchArea(Portal receivedPortal){
+        //switches the player's area when stepping into a portal
         ((ICMazeArea) getCurrentArea()).clearList();
         getCurrentArea().unregisterActor(player);
         setCurrentArea(receivedPortal.getDestinationArea(), false);
@@ -70,6 +72,7 @@ public class ICMaze extends AreaGame {
     @Override
     public void update(float deltaTime) {
         if (getCurrentArea().getKeyboard().get(KeyBindings.RESET_GAME).isPressed()){
+            // the game is reset, when the player presses the R key
             begin(getWindow(), getFileSystem());
         }
         Portal receivedPortal = player.getCurrentPortal();

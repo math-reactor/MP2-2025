@@ -67,7 +67,6 @@ public abstract class ICMazeArea extends Area {
         this.window = window;
         if (super.begin(window, fileSystem)) {
             // Set the behavior map
-
             setBehavior(new ICMazeBehaviour(window, name));
             size = getWidth();
             initPortals();
@@ -98,18 +97,21 @@ public abstract class ICMazeArea extends Area {
     }
 
     public void setPreviousPortal(String setPrevAreaSize, String setPrevArea, AreaPortals setPrevDir){
+        //sets the open (exit) portal of the current area
         prevAreaSize = setPrevAreaSize;
         prevArea = setPrevArea;
         prevDir = setPrevDir;
     }
 
     public void setNextPortal(String setNextAreaSize, String setNextArea, AreaPortals setNextDir){
+        //sets the closed (next) portal of the current area
         nextAreaSize = setNextAreaSize;
         nextArea = setNextArea;
         nextDir = setNextDir;
     }
 
     private void initPortals() {
+        //initlailzes all four portals in the current area
         for (AreaPortals ap : AreaPortals.values()) {
             DiscreteCoordinates mainCell;
             switch (ap) {
@@ -125,6 +127,7 @@ public abstract class ICMazeArea extends Area {
             DiscreteCoordinates defaultSpawn = new DiscreteCoordinates(1,1);
 
             Portal portal = new Portal(this, spriteOrientation, mainCell, destAreaName, defaultSpawn, keyVal);
+            //creates an open or locked door, based on the area's attributes
             if (ap == nextDir || ap == prevDir){
                 if (ap == prevDir){
                     portal.setState(PortalState.OPEN);
@@ -138,28 +141,27 @@ public abstract class ICMazeArea extends Area {
                 }
             }
 
-
             portals[ap.ordinal()] = portal;
             addItem(portal);
         }
     }
 
     public void addItem(Actor Item){
-        //adds the created items into the list
+        //adds the created items into the area
         runThrough.add((Actor) Item);
         this.registerActor(Item);
     }
 
     public void renewList(){
+        //registers all the actors of the current area
         for (Actor actor : runThrough){
             this.registerActor(actor);
-            this.
             enterAreaCells((Interactable) actor, ((Interactable) actor).getCurrentCells());
         }
     }
 
     public void removeItem(Actor Item){
-        //removes the item from the list
+        //removes the given item from the list
         for (int i = 0; i < runThrough.size(); i++){
             if (runThrough.get(i).equals((Actor) Item)){
                 this.unregisterActor(Item);
@@ -169,8 +171,8 @@ public abstract class ICMazeArea extends Area {
             }
         }
     }
-
     public void clearList(){
+        //removes all actors in the current area
         int maxSize = runThrough.size();
         for (int i = 0; i < maxSize; i++){
             this.unregisterActor(runThrough.get(i));
@@ -180,6 +182,7 @@ public abstract class ICMazeArea extends Area {
     public String getName(){return name;}
     protected int getKeyVal(){return keyVal;}
     public void setKeyVal(int newKV){
+        //edits the key ID of a portal
         keyVal = newKV;
         for (AreaPortals dir : AreaPortals.values()){
             getPortal(dir).setKeyId(newKV);
@@ -189,9 +192,11 @@ public abstract class ICMazeArea extends Area {
         graph = new AreaGraph();
     }
     protected void createNode(int row, int col, boolean up, boolean left, boolean down, boolean right){
+        //creates a pathfinding node for the graph
         graph.addNode(new DiscreteCoordinates(col, row),left, up,right,down);
     }
     protected void randomKey(int keyID){
+        //creates a key at a random spot
         List lst = graph.keySet();
         Collections.shuffle(lst, RandomGenerator.rng);
         DiscreteCoordinates randomCoords = (DiscreteCoordinates) lst.get(0);
@@ -199,6 +204,7 @@ public abstract class ICMazeArea extends Area {
     }
 
     public void replaceWallByHeart(DiscreteCoordinates position){
+        //creates a heart, when a wall is broken, at a certain probability
         Heart newH = new Heart(this, position);
         addItem(newH);
     }

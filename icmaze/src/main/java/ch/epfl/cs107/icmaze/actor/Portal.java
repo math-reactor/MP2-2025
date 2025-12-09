@@ -81,6 +81,7 @@ public class Portal extends AreaEntity{
     }
 
     public void setDestinationCoordinates(ICMazeArea.AreaPortals direction, String nextAreaSize) {
+        //sets the destination coordinates of the next area
         DiscreteCoordinates arrival;
         int size = Size.getSize(nextAreaSize);
         switch (direction) {

@@ -62,6 +62,7 @@ public class ICMazePlayer extends ICMazeActor implements Interactor {
         hasPickaxe = false;
     }
     private void displace(Button key, Orientation orient){
+        //moves the character
         if (key.isDown()){
             if (!isDisplacementOccurs()){
                 orientate(orient);
@@ -78,6 +79,7 @@ public class ICMazePlayer extends ICMazeActor implements Interactor {
         }
     }
     public void handleAnim(float deltaTime){
+        //handles the currently played animation
         if (!pickaxeAnim.isCompleted() && attacking){
             pickaxeAnim.update(deltaTime);
         }
@@ -97,6 +99,7 @@ public class ICMazePlayer extends ICMazeActor implements Interactor {
         final Orientation[] orders = { Orientation.DOWN , Orientation.RIGHT , Orientation.UP, Orientation.LEFT };
         switch (currentState){
             case IDLE -> {
+                //movement
                 displace(keyboard.get(keys.left()), Orientation.LEFT);
                 displace(keyboard.get(keys.up()), Orientation.UP);
                 displace(keyboard.get(keys.down()), Orientation.DOWN);
@@ -153,7 +156,7 @@ public class ICMazePlayer extends ICMazeActor implements Interactor {
         other.acceptInteraction(interactionHandler , isCellInteraction);
     }
     private class ICMazePlayerInteractionHandler implements ICMazeInteractionVisitor{
-        //gère les interactions entre le joueur et les autres choses
+        //handles the interactions between the player and other actors
         public void interactWith(Pickaxe pickaxe, boolean isCellInteraction){
             if (!pickaxe.isCollected()){
                 hasPickaxe = true;

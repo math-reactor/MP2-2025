@@ -18,7 +18,6 @@ public class BossArea extends ICMazeArea {
         registerActor(new Background(this, name));
     }
     public String getTitle(){return "ICMaze/Boss";}
-    public String getSize(){return "SmallArea";}
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
