@@ -15,7 +15,7 @@ public class LargeArea extends MazeArea {
         registerActor(new Background(this, name));
         //sets up the different sprites
         super.createArea();
-        super.randomKey(exitKey-1);
+        super.randomKey(getKeyVal());
     }
-    public String getTitle(){return "ICMaze/LargeArea["+exitKey+"]";}
+    public String getTitle(){return "ICMaze/LargeArea["+getKeyVal()+"]";}
 }

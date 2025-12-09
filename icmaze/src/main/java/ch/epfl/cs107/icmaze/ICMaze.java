@@ -30,7 +30,7 @@ public class ICMaze extends AreaGame {
     public Rock r;
     public boolean begin(Window window, FileSystem fileSystem){
         if (super.begin(window , fileSystem)) {
-            createAreas(LevelGenerator.generateLine(this, 8));
+            createAreas(LevelGenerator.generateLine(this, 3));
             setCurrentArea("ICMaze/Spawn", true);
             player = new ICMazePlayer(getCurrentArea(), Orientation.DOWN, new DiscreteCoordinates(5,5));
             player.enterArea(getCurrentArea(), new DiscreteCoordinates(5,5));
@@ -50,6 +50,9 @@ public class ICMaze extends AreaGame {
         ((ICMazeArea) getCurrentArea()).clearList();
         getCurrentArea().unregisterActor(player);
         setCurrentArea(receivedPortal.getDestinationArea(), false);
+        if (receivedPortal.getDestinationArea() == "ICMaze/Boss"){
+            ((ICMazeArea) getCurrentArea()).setKeyVal(-1);
+        }
         ((ICMazeArea) getCurrentArea()).renewList();
         player.enterArea(getCurrentArea(), receivedPortal.getDestinationCoordinates());
         getCurrentArea().setViewCandidate(player);
@@ -66,11 +69,14 @@ public class ICMaze extends AreaGame {
     }
     @Override
     public void update(float deltaTime) {
-        super.update(deltaTime);
+        if (getCurrentArea().getKeyboard().get(KeyBindings.RESET_GAME).isPressed()){
+            begin(getWindow(), getFileSystem());
+        }
         Portal receivedPortal = player.getCurrentPortal();
         if (receivedPortal != null){
             switchArea(receivedPortal);
             player.clearCurrentPortal();
         }
+        super.update(deltaTime);
     }
 }

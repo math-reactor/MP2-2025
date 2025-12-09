@@ -1,6 +1,7 @@
 package ch.epfl.cs107;
 
 import ch.epfl.cs107.icmaze.ICMaze;
+import ch.epfl.cs107.icmaze.KeyBindings;
 import ch.epfl.cs107.play.engine.Game;
 import ch.epfl.cs107.play.engine.actor.ImageGraphics;
 import ch.epfl.cs107.play.io.DefaultFileSystem;

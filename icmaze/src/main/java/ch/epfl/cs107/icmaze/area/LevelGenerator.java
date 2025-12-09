@@ -17,7 +17,7 @@ public class LevelGenerator {
         Map<int[], ICMazeArea> levelSetup = new HashMap<>();
         int[] currentPos = {0,0};
         int currKeyVal = Integer.MAX_VALUE;
-        levelSetup.put(currentPos, new Spawn());
+        levelSetup.put(currentPos, new Spawn(currKeyVal));
         for (int i = 1; i < length; i++){
             int[] nextLevelPos;
             do{
@@ -25,16 +25,17 @@ public class LevelGenerator {
             }while(contains(levelSetup, nextLevelPos) != null);
             ICMazeArea newArea;
             ICMazeArea previousArea = contains(levelSetup, currentPos);
+            currKeyVal -= 1;
             if (i < length-1){
                 double progress = (double) (i + 1) / length;
                 newArea = areaCreation(progress, currKeyVal);
-                currKeyVal -= 1;
+                newArea.setPreviousPortal(previousArea.getName(), previousArea.getTitle(), getrelativeDirection(nextLevelPos, currentPos));
             }
             else{
                 newArea = new BossArea();
+                newArea.setNextPortal(previousArea.getName(), previousArea.getTitle(), getrelativeDirection(nextLevelPos, currentPos));
             }
             previousArea.setNextPortal(newArea.getName(), newArea.getTitle(), getrelativeDirection(currentPos, nextLevelPos));
-            newArea.setPreviousPortal(previousArea.getName(), previousArea.getTitle(), getrelativeDirection(nextLevelPos, currentPos));
             levelSetup.put(nextLevelPos, newArea);
             currentPos = nextLevelPos;
         }

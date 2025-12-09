@@ -7,14 +7,12 @@ import ch.epfl.cs107.play.math.DiscreteCoordinates;
 
 public abstract class MazeArea extends ICMazeArea {
     //private AreaPortals entrance;
-    protected int exitKey;
     private int difficulty;
     private int[][] mazeGrid;
 
     public MazeArea(int setExitKey, int setDiff, String name){
-        super(name);
+        super(name, setExitKey);
         super.createGraph();
-        exitKey = setExitKey;
         difficulty = setDiff;
     }
     public void createArea(){

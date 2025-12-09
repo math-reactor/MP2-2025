@@ -43,7 +43,6 @@ public class Rock extends AreaEntity {
         destroyed = true;
         DiscreteCoordinates coords = getCurrentMainCellCoordinates();
         ((MazeArea) getOwnerArea()).makePointWalkable(coords);
-        getOwnerArea().purgeAreaCellsFrom(this);
         ((ICMazeArea) getOwnerArea()).removeItem(this);
         int randVal = RandomGenerator.rng.nextInt(3);
         if (randVal == 0){

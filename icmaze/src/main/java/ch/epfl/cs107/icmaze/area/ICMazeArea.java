@@ -43,11 +43,12 @@ public abstract class ICMazeArea extends Area {
     private String prevArea;
     private String prevAreaSize;
     private AreaPortals prevDir;
+    private int keyVal;
 
-
-    public ICMazeArea(String setName){
+    public ICMazeArea(String setName, int setKeyVal){
         runThrough = new ArrayList<>();
         name = setName;
+        keyVal = setKeyVal;
     }
 
     /**
@@ -121,10 +122,9 @@ public abstract class ICMazeArea extends Area {
             Orientation spriteOrientation = ap.getOrientation();
 
             String destAreaName = null;
-            int keyId = Integer.MAX_VALUE;
             DiscreteCoordinates defaultSpawn = new DiscreteCoordinates(1,1);
 
-            Portal portal = new Portal(this, spriteOrientation, mainCell, destAreaName, defaultSpawn, keyId);
+            Portal portal = new Portal(this, spriteOrientation, mainCell, destAreaName, defaultSpawn, keyVal);
             if (ap == nextDir || ap == prevDir){
                 if (ap == prevDir){
                     portal.setState(PortalState.OPEN);
@@ -178,7 +178,13 @@ public abstract class ICMazeArea extends Area {
         }
     }
     public String getName(){return name;}
-    protected int getNodeSize(){return graph.keySet().size();}
+    protected int getKeyVal(){return keyVal;}
+    public void setKeyVal(int newKV){
+        keyVal = newKV;
+        for (AreaPortals dir : AreaPortals.values()){
+            getPortal(dir).setKeyId(newKV);
+        }
+    }
     protected void createGraph(){
         graph = new AreaGraph();
     }

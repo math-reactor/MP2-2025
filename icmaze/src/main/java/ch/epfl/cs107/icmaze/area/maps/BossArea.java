@@ -12,7 +12,7 @@ import ch.epfl.cs107.play.window.Canvas;
 public class BossArea extends ICMazeArea {
 
     public BossArea(){
-        super("SmallArea");
+        super("SmallArea", -1);
     }
     public void createArea(){
         registerActor(new Background(this, name));

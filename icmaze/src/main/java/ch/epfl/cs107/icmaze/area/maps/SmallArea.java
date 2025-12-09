@@ -22,7 +22,7 @@ public class SmallArea extends MazeArea {
         registerActor(new Background(this, name));
         //sets up the different sprites
         super.createArea();
-        super.randomKey(exitKey-1);
+        super.randomKey(getKeyVal());
     }
-    public String getTitle(){return "ICMaze/SmallArea["+exitKey+"]";}
+    public String getTitle(){return "ICMaze/SmallArea["+getKeyVal()+"]";}
 }

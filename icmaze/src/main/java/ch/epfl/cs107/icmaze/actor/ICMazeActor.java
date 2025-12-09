@@ -24,7 +24,6 @@ public abstract class ICMazeActor extends MovableAreaEntity implements Interacta
         resetMotion();
         setOwnerArea(area);
     }
-    public String getParentArea(){return parentArea;}
     public void exitArea(){
         getOwnerArea().unregisterActor(this);
     }
