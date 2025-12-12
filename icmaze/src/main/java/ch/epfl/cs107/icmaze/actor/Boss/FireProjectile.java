@@ -61,11 +61,11 @@ public class FireProjectile extends BossProjectile implements Interactor {
     }
     @Override
     public boolean wantsCellInteraction() {
-        return steps <= MAXDISTANCE;
+        return steps < MAXDISTANCE;
     }
     @Override
     public boolean wantsViewInteraction() {
-        return steps <= MAXDISTANCE;
+        return steps < MAXDISTANCE;
     }
     @Override
     public List<DiscreteCoordinates> getFieldOfViewCells() {
@@ -73,6 +73,7 @@ public class FireProjectile extends BossProjectile implements Interactor {
     }
     private void hit(ICMazeActor actor, boolean isPlayer){
         steps = MAXDISTANCE+1;
+
     }
 
     @Override
@@ -82,8 +83,9 @@ public class FireProjectile extends BossProjectile implements Interactor {
     private class BossProjInteractionHandler implements ICMazeInteractionVisitor {
         //handles the interactions between the projectile and the player
         public void interactWith(ICMazePlayer player, boolean isCellInteraction){
-            if (isCellInteraction){
+            if (isCellInteraction && steps < MAXDISTANCE){
                 hit(player, false);
+                player.beAttacked(DAMAGE);
             }
         };
         public void interactWith(ICMazeBoss boss, boolean isCellInteraction){

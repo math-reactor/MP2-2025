@@ -6,6 +6,7 @@ import ch.epfl.cs107.icmaze.actor.Boss.ICMazeBoss;
 import ch.epfl.cs107.icmaze.actor.collectable.Heart;
 import ch.epfl.cs107.icmaze.actor.collectable.Key;
 import ch.epfl.cs107.icmaze.actor.collectable.Pickaxe;
+import ch.epfl.cs107.icmaze.actor.util.Cooldown;
 import ch.epfl.cs107.icmaze.area.ICMazeArea;
 import ch.epfl.cs107.icmaze.area.ICMazeBehaviour;
 import ch.epfl.cs107.icmaze.area.maps.BossArea;
@@ -16,10 +17,12 @@ import ch.epfl.cs107.play.areagame.actor.Interactor;
 import ch.epfl.cs107.play.areagame.area.Area;
 import ch.epfl.cs107.play.areagame.handler.AreaInteractionVisitor;
 import ch.epfl.cs107.play.engine.actor.Actor;
+import ch.epfl.cs107.play.engine.actor.Animation;
 import ch.epfl.cs107.play.engine.actor.OrientedAnimation;
 import ch.epfl.cs107.play.engine.actor.Sprite;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.math.Orientation;
+import ch.epfl.cs107.play.math.Transform;
 import ch.epfl.cs107.play.math.Vector;
 import ch.epfl.cs107.play.window.Button;
 import ch.epfl.cs107.play.window.Canvas;
@@ -43,6 +46,8 @@ public class ICMazePlayer extends ICMazeActor implements Interactor {
     final Orientation[] pickOrders = {Orientation.DOWN , Orientation.UP, Orientation.RIGHT , Orientation.LEFT};
     final Vector anchor = new Vector(0, 0);
     final Vector pickaxeAnchor = new Vector(-.5f, 0);
+    private final static int MAX_LIFE = 3;
+
 
     private KeyBindings.PlayerKeyBindings keys = KeyBindings.PLAYER_KEY_BINDINGS;
     private PlayerStates currentState;
@@ -53,7 +58,8 @@ public class ICMazePlayer extends ICMazeActor implements Interactor {
     private ArrayList<Integer> memeorizedKeys = new ArrayList<>();
     private boolean hasPickaxe;
     private Portal currentPortal = null;
-    private boolean attacking = false;
+    private boolean attacking;
+
     //constructor
     public ICMazePlayer(Area setArea, Orientation setOrient, DiscreteCoordinates setCoords){
         super(setArea, setOrient, setCoords);
@@ -63,6 +69,8 @@ public class ICMazePlayer extends ICMazeActor implements Interactor {
         currentState = PlayerStates.IDLE;
         interactionHandler = new ICMazePlayerInteractionHandler();
         hasPickaxe = false;
+        health = new Health(this, Transform.I.translated(0, 1.25f), MAX_LIFE , true);
+        setCd();
     }
     private void displace(Button key, Orientation orient){
         //moves the character
@@ -75,13 +83,13 @@ public class ICMazePlayer extends ICMazeActor implements Interactor {
     }
     public void draw(Canvas canvas){
         if (!attacking){
-            UI.draw(canvas);
+            handleAnim(UI, canvas);
         }
         else {
-            pickaxeAnim.draw(canvas);
+            handleAnim(pickaxeAnim, canvas);
         }
     }
-    public void handleAnim(float deltaTime){
+    public void runAnim(float deltaTime){
         //handles the currently played animation
         if (!pickaxeAnim.isCompleted() && attacking){
             pickaxeAnim.update(deltaTime);
@@ -98,8 +106,7 @@ public class ICMazePlayer extends ICMazeActor implements Interactor {
         }
     }
     public void update(float deltaTime) {
-        final Vector anchor = new Vector(0, 0);
-        final Orientation[] orders = { Orientation.DOWN , Orientation.RIGHT , Orientation.UP, Orientation.LEFT };
+        handleRecovery(deltaTime);
         switch (currentState){
             case IDLE -> {
                 //movement
@@ -114,7 +121,7 @@ public class ICMazePlayer extends ICMazeActor implements Interactor {
                     currentState = PlayerStates.INTERACTING;
                 }
                 UI.update(deltaTime);
-                handleAnim(deltaTime);
+                runAnim(deltaTime);
             }
             case INTERACTING -> {
                 if (!keyboard.get(keys.interact()).isDown()) {
@@ -132,6 +139,14 @@ public class ICMazePlayer extends ICMazeActor implements Interactor {
     public boolean checkKey(int key){return memeorizedKeys.indexOf(key) != -1;}
     public Portal getCurrentPortal() {return currentPortal;}
     public void clearCurrentPortal() {currentPortal = null;}
+
+    public void beAttacked(int damage){
+        if (!getRecovery()){
+            health.decrease(damage);
+            drawFrame = 0;
+            setRecovery(true);
+        }
+    }
 
     @Override
     public List<DiscreteCoordinates> getFieldOfViewCells() {
@@ -168,6 +183,11 @@ public class ICMazePlayer extends ICMazeActor implements Interactor {
         };
         public void interactWith(Heart heart, boolean isCellInteraction){
             if (!heart.isCollected()){
+                if (health.getHealth() < MAX_LIFE){
+                    health.increase(1);
+                    drawFrame = 0;
+                    setRecovery(true);
+                }
                 ((ICMazeArea) getOwnerArea()).removeItem(heart);
             }
         };

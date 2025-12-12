@@ -22,6 +22,8 @@ public abstract class BossProjectile extends ICMazeActor {
     protected final static int SPEED = 1;
     protected final int MOVE_DURATION = 30;
     protected final int ANIMATION_DURATION = 12;
+    protected final int DAMAGE = 1;
+
     protected int steps = 1;
     public BossProjectile(Area setArea, Orientation orient, DiscreteCoordinates setPos){
         super(setArea, orient, setPos);

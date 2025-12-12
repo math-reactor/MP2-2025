@@ -23,22 +23,19 @@ public class ICMazeBoss extends ICMazeActor {
     private final static int[][] teleportPositions = {{4, 1}, {8, 4}, {4, 8}, {1, 4}};
     private final double SHOOTINTERVAL = 5;
     private final int ANIMATION_DURATION = 60;
-    private int COOLDOWN_TIME = 24;
     private int MAX_LIFE = 5;
     private OrientedAnimation UI;
     private boolean angered = false;
     private double timeInterval = 0;
     private Animation poof;
     private boolean destroyed = false;
-    private boolean recovering = false;
-    private boolean drawFrame = true;
-    private Health health = new Health(this, Transform.I.translated(0, 1.25f), MAX_LIFE , false);
-    private Cooldown cd = new Cooldown(COOLDOWN_TIME);
 
     public ICMazeBoss(Area setArea){
         super(setArea, Orientation.DOWN, new DiscreteCoordinates(setArea.getWidth()/2, setArea.getHeight()/2));
         UI = new OrientedAnimation("icmaze/boss", ANIMATION_DURATION/4, this , anchor , orders , 3, 2, 2, 32, 32, true);
         poof = new Animation("icmaze/vanish", 7, 2, 2, this , 32, 32, new Vector(-0.5f, 0.0f), ANIMATION_DURATION/7, false);
+        health = new Health(this, Transform.I.translated(0, 1.25f), MAX_LIFE , false);
+        setCd();
     }
 
     private void teleportRandom(){
@@ -62,12 +59,13 @@ public class ICMazeBoss extends ICMazeActor {
     }
 
     public void beAttacked(int damage){
-        if (angered){
+        if (angered && !getRecovery()){
             health.decrease(damage);
-            recovering = true;
-        }
-        if (health.getHealth() > 0){
-            teleportRandom();
+            drawFrame = 0;
+            setRecovery(true);
+            if (health.getHealth() > 0){
+                teleportRandom();
+            }
         }
         angered = true;
     }
@@ -108,20 +106,7 @@ public class ICMazeBoss extends ICMazeActor {
     public void update(float deltaTime) {
         if (health.getHealth() > 0){
             if (angered){
-                //recovery
-                if (recovering){
-                    recovering = !cd.ready(deltaTime);
-                    if (drawFrame){
-                        drawFrame = false;
-                    } else {
-                        drawFrame = true;
-                    }
-                }
-                else {
-                    drawFrame = true;
-                    cd.reset();
-                }
-
+                handleRecovery(deltaTime);
                 timeInterval += deltaTime;
                 if (timeInterval >= SHOOTINTERVAL){
                     timeInterval = 0;
@@ -129,7 +114,6 @@ public class ICMazeBoss extends ICMazeActor {
                 }
             }
             UI.update(deltaTime);
-            super.update(deltaTime);
         }
         else {
             if (!destroyed){
@@ -146,13 +130,7 @@ public class ICMazeBoss extends ICMazeActor {
     @Override
     public void draw(Canvas canvas) {
         if (health.getHealth() > 0){
-            if (drawFrame){
-                UI.draw(canvas);
-                super.draw(canvas);
-            }
-            if (recovering){
-                health.draw(canvas);
-            }
+            handleAnim(UI, canvas);
         }
         else{
             if (!destroyed){

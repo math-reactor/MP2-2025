@@ -23,15 +23,14 @@ import java.util.List;
 
 public class Rock extends AreaEntity {
     private final int ANIMATION_DURATION = 24;
-    private int COOLDOWN_TIME = 24;
     private final static int MAX_LIFE = 3;
     private Sprite UI;
     private Animation poof;
     private boolean destroyed = false;
     private boolean recovering = false;
-    private boolean drawFrame = true;
-    private Health health = new Health(this, Transform.I.translated(0, 1.25f), MAX_LIFE , false);
-    private Cooldown cd = new Cooldown(COOLDOWN_TIME);
+    private Health health = new Health(this, Transform.I.translated(0, 0.25f), MAX_LIFE , false);
+    private Cooldown cd = new Cooldown(health.STANDARD_COOLDOWN_TIME);
+    private int drawFrame;
 
     public Rock(Area area, DiscreteCoordinates pos){
         super(area, Orientation.DOWN, pos);
@@ -46,6 +45,7 @@ public class Rock extends AreaEntity {
     public void damage(int damage){
         if (!recovering){
             health.decrease(damage);
+            drawFrame = 0;
             recovering = true;
         }
     }
@@ -63,11 +63,15 @@ public class Rock extends AreaEntity {
 
     @Override
     public void draw(Canvas canvas) {
-        if (recovering){
-            health.draw(canvas);
-        }
         if (health.getHealth() > 0){
-            if (drawFrame){
+            if (recovering){
+                if (drawFrame % 4 == 0){
+                    UI.draw(canvas);
+                }
+                drawFrame += 1;
+                health.draw(canvas);
+            }
+            else {
                 UI.draw(canvas);
             }
         }
@@ -87,14 +91,8 @@ public class Rock extends AreaEntity {
     public void update(float deltaTime) {
         if (recovering){
             recovering = !cd.ready(deltaTime);
-            if (drawFrame){
-                drawFrame = false;
-            } else {
-                drawFrame = true;
-            }
         }
         else {
-            drawFrame = true;
             cd.reset();
         }
         if (health.getHealth() <= 0 && !poof.isCompleted()){
