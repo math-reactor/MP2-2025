@@ -489,4 +489,8 @@ public abstract class Area implements Playable, Graphics, PauseMenu.Pausable {
     }
 
     public boolean isViewCentered() { return false; }
+
+    public Object getGame() {
+        return null;
+    }
 }

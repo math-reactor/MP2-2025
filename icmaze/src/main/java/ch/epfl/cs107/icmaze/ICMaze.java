@@ -85,4 +85,7 @@ public class ICMaze extends AreaGame {
         victory = ((ICMazeArea) getCurrentArea()).isOn();
         super.update(deltaTime);
     }
+
+    public void reset() {
+    }
 }
