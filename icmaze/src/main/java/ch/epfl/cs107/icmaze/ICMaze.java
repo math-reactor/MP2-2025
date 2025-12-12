@@ -74,4 +74,7 @@ public class ICMaze extends AreaGame {
             player.clearCurrentPortal();
         }
     }
+
+    public void reset() {
+    }
 }
