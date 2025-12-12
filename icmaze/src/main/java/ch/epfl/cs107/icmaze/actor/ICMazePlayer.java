@@ -2,11 +2,13 @@ package ch.epfl.cs107.icmaze.actor;
 
 import ch.epfl.cs107.icmaze.ICMaze;
 import ch.epfl.cs107.icmaze.KeyBindings;
+import ch.epfl.cs107.icmaze.actor.Boss.ICMazeBoss;
 import ch.epfl.cs107.icmaze.actor.collectable.Heart;
 import ch.epfl.cs107.icmaze.actor.collectable.Key;
 import ch.epfl.cs107.icmaze.actor.collectable.Pickaxe;
 import ch.epfl.cs107.icmaze.area.ICMazeArea;
 import ch.epfl.cs107.icmaze.area.ICMazeBehaviour;
+import ch.epfl.cs107.icmaze.area.maps.BossArea;
 import ch.epfl.cs107.icmaze.handler.ICMazeInteractionVisitor;
 import ch.epfl.cs107.play.areagame.AreaGame;
 import ch.epfl.cs107.play.areagame.actor.Interactable;
@@ -36,6 +38,7 @@ public class ICMazePlayer extends ICMazeActor implements Interactor {
     private final static int ANIMATION_DURATION = 6;
     private final String prefix = "icmaze/player";
     private final int PICKAXE_ANIMATION_DURATION = 5;
+    private final int MAX_DAMAGE = 1;
     final Orientation[] orders = { Orientation.DOWN , Orientation.RIGHT , Orientation.UP, Orientation.LEFT };
     final Orientation[] pickOrders = {Orientation.DOWN , Orientation.UP, Orientation.RIGHT , Orientation.LEFT};
     final Vector anchor = new Vector(0, 0);
@@ -171,12 +174,20 @@ public class ICMazePlayer extends ICMazeActor implements Interactor {
         public void interactWith(Key key, boolean isCellInteraction){
             if (!key.isCollected()){
                 memeorizedKeys.add(key.getID());
+                if (key.getID() == -1){
+                    ((BossArea) getOwnerArea()).victory();
+                }
                 ((ICMazeArea) getOwnerArea()).removeItem(key);
             }
         };
         public void interactWith(Rock rock, boolean isCellInteraction){
-            if (!isCellInteraction){
-                rock.damage();
+            if (!isCellInteraction && currentState == PlayerStates.ATTACKING_WITH_PICKAXE){
+                rock.damage(MAX_DAMAGE);
+            }
+        };
+        public void interactWith(ICMazeBoss boss, boolean isCellInteraction){
+            if (!isCellInteraction && currentState == PlayerStates.ATTACKING_WITH_PICKAXE){
+                boss.beAttacked(MAX_DAMAGE);
             }
         };
         public void interactWith(Portal portal, boolean isCellInteraction) {

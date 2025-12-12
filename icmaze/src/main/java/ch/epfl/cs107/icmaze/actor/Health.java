@@ -114,6 +114,7 @@ public class Health implements Graphics, Logic {
         healthPoints = Math.min(maxHealth, healthPoints + amount);
     }
 
+    public int getHealth(){return healthPoints;}
     /**
      * @param amount (int): decrease the health points with this amount. The health points are capped at 0.
      */

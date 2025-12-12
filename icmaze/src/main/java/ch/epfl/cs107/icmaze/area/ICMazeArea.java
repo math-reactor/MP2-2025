@@ -1,12 +1,14 @@
 package ch.epfl.cs107.icmaze.area;
 
 import ch.epfl.cs107.icmaze.RandomGenerator;
+import ch.epfl.cs107.icmaze.actor.Health;
 import ch.epfl.cs107.icmaze.actor.ICMazeActor;
 import ch.epfl.cs107.icmaze.actor.Portal;
 import ch.epfl.cs107.icmaze.actor.PortalState;
 import ch.epfl.cs107.icmaze.actor.collectable.Heart;
 import ch.epfl.cs107.icmaze.actor.collectable.Key;
 import ch.epfl.cs107.icmaze.actor.collectable.Pickaxe;
+import ch.epfl.cs107.icmaze.area.maps.BossArea;
 import ch.epfl.cs107.play.areagame.AreaGraph;
 import ch.epfl.cs107.play.areagame.actor.AreaEntity;
 import ch.epfl.cs107.play.areagame.actor.Interactable;
@@ -17,6 +19,8 @@ import ch.epfl.cs107.play.io.FileSystem;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.math.Orientation;
 import ch.epfl.cs107.play.math.Vector;
+import ch.epfl.cs107.play.signal.Signal;
+import ch.epfl.cs107.play.signal.logic.Logic;
 import ch.epfl.cs107.play.window.Canvas;
 import ch.epfl.cs107.play.window.Window;
 
@@ -24,16 +28,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class ICMazeArea extends Area {
+public abstract class ICMazeArea extends Area  implements Logic {
     private final Portal[] portals = new Portal[AreaPortals.values().length];
-    public ArrayList <Actor> runThrough; //Contains all entities in this area, for easy access
+    public ArrayList<Actor> runThrough; //Contains all entities in this area, for easy access
+    public ArrayList<Health> healthbars = new ArrayList<>();;
     public final static float DEFAULT_SCALE_FACTOR = 11.f;
     public final static float DYNAMIC_SCALE_MULTIPLIER = 1.375f;
     public final static float MAXIMUM_SCALE = 30.f;
     private float cameraScaleFactor = DEFAULT_SCALE_FACTOR;
     private Window window;
     private AreaGraph graph;
-    protected String name;
+    private String name;
     private int size;
 
     //portal information
@@ -171,6 +176,7 @@ public abstract class ICMazeArea extends Area {
             }
         }
     }
+
     public void clearList(){
         //removes all actors in the current area
         int maxSize = runThrough.size();
@@ -179,8 +185,10 @@ public abstract class ICMazeArea extends Area {
             purgeAreaCellsFrom((Interactable) runThrough.get(i));
         }
     }
-    public String getName(){return name;}
+
+    public String getAreaSize(){return name;}
     protected int getKeyVal(){return keyVal;}
+
     public void setKeyVal(int newKV){
         //edits the key ID of a portal
         keyVal = newKV;

@@ -1,6 +1,8 @@
 package ch.epfl.cs107.icmaze.actor;
 
 import ch.epfl.cs107.icmaze.RandomGenerator;
+import ch.epfl.cs107.icmaze.actor.collectable.Heart;
+import ch.epfl.cs107.icmaze.actor.util.Cooldown;
 import ch.epfl.cs107.icmaze.area.ICMazeArea;
 import ch.epfl.cs107.icmaze.area.MazeArea;
 import ch.epfl.cs107.icmaze.handler.ICMazeInteractionVisitor;
@@ -11,18 +13,26 @@ import ch.epfl.cs107.play.engine.actor.Animation;
 import ch.epfl.cs107.play.engine.actor.Sprite;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.math.Orientation;
+import ch.epfl.cs107.play.math.Transform;
 import ch.epfl.cs107.play.math.Vector;
 import ch.epfl.cs107.play.window.Canvas;
 
+import java.net.CookieHandler;
 import java.util.Collections;
 import java.util.List;
 
 public class Rock extends AreaEntity {
     private final int ANIMATION_DURATION = 24;
+    private int COOLDOWN_TIME = 24;
+    private final static int MAX_LIFE = 3;
     private Sprite UI;
-    private int Health = 3;
     private Animation poof;
     private boolean destroyed = false;
+    private boolean recovering = false;
+    private boolean drawFrame = true;
+    private Health health = new Health(this, Transform.I.translated(0, 1.25f), MAX_LIFE , false);
+    private Cooldown cd = new Cooldown(COOLDOWN_TIME);
+
     public Rock(Area area, DiscreteCoordinates pos){
         super(area, Orientation.DOWN, pos);
         UI = new Sprite("rock.2", 1f, 1f, this);
@@ -33,8 +43,11 @@ public class Rock extends AreaEntity {
         area.registerActor(this);
         setCurrentPosition(position.toVector());
     }
-    public void damage(){
-        Health -= 1;
+    public void damage(int damage){
+        if (!recovering){
+            health.decrease(damage);
+            recovering = true;
+        }
     }
     private void handleRockDestruction(){
         //destroys the rock, and has a probability to give a heart
@@ -50,8 +63,13 @@ public class Rock extends AreaEntity {
 
     @Override
     public void draw(Canvas canvas) {
-        if (Health > 0){
-            UI.draw(canvas);
+        if (recovering){
+            health.draw(canvas);
+        }
+        if (health.getHealth() > 0){
+            if (drawFrame){
+                UI.draw(canvas);
+            }
         }
         else{
             //draws the destruction cloud
@@ -67,10 +85,22 @@ public class Rock extends AreaEntity {
 
     @Override
     public void update(float deltaTime) {
-        super.update(deltaTime);
-        if (Health <= 0 && !poof.isCompleted()){
+        if (recovering){
+            recovering = !cd.ready(deltaTime);
+            if (drawFrame){
+                drawFrame = false;
+            } else {
+                drawFrame = true;
+            }
+        }
+        else {
+            drawFrame = true;
+            cd.reset();
+        }
+        if (health.getHealth() <= 0 && !poof.isCompleted()){
             poof.update(deltaTime);
         }
+        super.update(deltaTime);
     }
     @Override
     public List<DiscreteCoordinates> getCurrentCells() {
@@ -82,11 +112,11 @@ public class Rock extends AreaEntity {
     }
     @Override
     public boolean isCellInteractable() {
-        return Health > 0;
+        return health.getHealth() > 0;
     }
     @Override
     public boolean isViewInteractable() {
-        return Health > 0;
+        return health.getHealth() > 0;
     }
 
     @Override

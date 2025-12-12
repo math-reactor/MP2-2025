@@ -12,7 +12,11 @@ import ch.epfl.cs107.icmaze.area.maps.*;
 import static ch.epfl.cs107.icmaze.RandomGenerator.rng;
 
 public class LevelGenerator {
-    public static ICMazeArea[] generateLine(ICMaze game , int length){
+    private final static int MINIMAL_LENGTH = 2;
+    public static ICMazeArea[] generateLine(int length){
+        if (length < MINIMAL_LENGTH){
+            length = MINIMAL_LENGTH;
+        }
         ICMazeArea[] areas = new ICMazeArea[length];
         Map<int[], ICMazeArea> levelSetup = new HashMap<>();
         int[] currentPos = {0,0};
@@ -29,13 +33,13 @@ public class LevelGenerator {
             if (i < length-1){
                 double progress = (double) (i + 1) / length;
                 newArea = areaCreation(progress, currKeyVal);
-                newArea.setPreviousPortal(previousArea.getName(), previousArea.getTitle(), getrelativeDirection(nextLevelPos, currentPos));
+                newArea.setPreviousPortal(previousArea.getAreaSize(), previousArea.getTitle(), getrelativeDirection(nextLevelPos, currentPos));
             }
             else{
                 newArea = new BossArea();
-                newArea.setNextPortal(previousArea.getName(), previousArea.getTitle(), getrelativeDirection(nextLevelPos, currentPos));
+                newArea.setNextPortal(previousArea.getAreaSize(), previousArea.getTitle(), getrelativeDirection(nextLevelPos, currentPos));
             }
-            previousArea.setNextPortal(newArea.getName(), newArea.getTitle(), getrelativeDirection(currentPos, nextLevelPos));
+            previousArea.setNextPortal(newArea.getAreaSize(), newArea.getTitle(), getrelativeDirection(currentPos, nextLevelPos));
             levelSetup.put(nextLevelPos, newArea);
             currentPos = nextLevelPos;
         }

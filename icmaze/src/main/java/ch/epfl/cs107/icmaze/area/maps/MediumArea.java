@@ -8,7 +8,7 @@ public class MediumArea extends MazeArea {
         super(setKey, setDiff, "MediumArea");
     }
     public void createArea(){
-        registerActor(new Background(this, name));
+        registerActor(new Background(this, getAreaSize()));
         //sets up the different sprites
         super.createArea();
         super.randomKey(getKeyVal());

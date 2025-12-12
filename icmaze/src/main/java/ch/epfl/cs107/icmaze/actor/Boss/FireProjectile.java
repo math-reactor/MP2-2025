@@ -1,5 +1,6 @@
 package ch.epfl.cs107.icmaze.actor.Boss;
 
+import ch.epfl.cs107.icmaze.actor.ICMazeActor;
 import ch.epfl.cs107.icmaze.actor.ICMazePlayer;
 import ch.epfl.cs107.icmaze.area.ICMazeArea;
 import ch.epfl.cs107.icmaze.handler.ICMazeInteractionVisitor;
@@ -43,8 +44,10 @@ public class FireProjectile extends BossProjectile implements Interactor {
 
     @Override
     public void update(float deltaTime) {
-        anim.update(deltaTime);
-        super.update(deltaTime);
+        if (steps < MAXDISTANCE){
+            anim.update(deltaTime);
+            super.update(deltaTime);
+        }
     }
 
     @Override
@@ -62,15 +65,14 @@ public class FireProjectile extends BossProjectile implements Interactor {
     }
     @Override
     public boolean wantsViewInteraction() {
-        return false;
+        return steps <= MAXDISTANCE;
     }
     @Override
     public List<DiscreteCoordinates> getFieldOfViewCells() {
         return Collections.singletonList(getCurrentMainCellCoordinates().jump(getOrientation().toVector()));
     }
-    private void hit(ICMazePlayer player){
+    private void hit(ICMazeActor actor, boolean isPlayer){
         steps = MAXDISTANCE+1;
-        ((ICMazeArea) getOwnerArea()).removeItem(this);
     }
 
     @Override
@@ -81,7 +83,12 @@ public class FireProjectile extends BossProjectile implements Interactor {
         //handles the interactions between the projectile and the player
         public void interactWith(ICMazePlayer player, boolean isCellInteraction){
             if (isCellInteraction){
-                hit(player);
+                hit(player, false);
+            }
+        };
+        public void interactWith(ICMazeBoss boss, boolean isCellInteraction){
+            if (!isCellInteraction){
+                hit(boss, false);
             }
         };
     }

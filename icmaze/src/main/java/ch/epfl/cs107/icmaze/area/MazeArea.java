@@ -3,16 +3,19 @@ package ch.epfl.cs107.icmaze.area;
 import ch.epfl.cs107.icmaze.MazeGenerator;
 import ch.epfl.cs107.icmaze.actor.Rock;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
+import ch.epfl.cs107.play.signal.logic.Logic;
 
 public abstract class MazeArea extends ICMazeArea {
     //private AreaPortals entrance;
     private int difficulty;
     private int[][] mazeGrid;
+    private boolean victory;
 
     public MazeArea(int setExitKey, int setDiff, String name){
         super(name, setExitKey);
         super.createGraph();
         difficulty = setDiff;
+        victory = false;
     }
     public void createArea(){
         mazeGrid = MazeGenerator.createMaze(getWidth()-2, getHeight()-2, difficulty);
@@ -66,5 +69,13 @@ public abstract class MazeArea extends ICMazeArea {
             down = false;
         }
         super.createNode(row, col, up, left, down, right);
+    }
+    @Override
+    public boolean isOff() {
+        return !victory;
+    }
+    @Override
+    public boolean isOn() {
+        return victory;
     }
 }

@@ -11,7 +11,6 @@ import ch.epfl.cs107.play.window.Canvas;
 
 public class Heart extends Consumable  {
     private final static int ANIMATION_DURATION = 24;
-    private Animation UIelement;
     public Heart(Area area, DiscreteCoordinates coords){
         super(area, coords, ANIMATION_DURATION);
         setUI(new Animation("icmaze/heart", 4, 1, 1, this , 16, 16, ANIMATION_DURATION/4, true));
