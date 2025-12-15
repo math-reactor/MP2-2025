@@ -16,14 +16,12 @@ import ch.epfl.cs107.play.window.Canvas;
 
 public class BossArea extends ICMazeArea{
     private ICMazeBoss boss;
-    private boolean victory;
     public BossArea(){
         super("SmallArea", -1);
     }
     public void createArea(){
         registerActor(new Background(this, getAreaSize()));
         boss = new ICMazeBoss(this);
-        victory = false;
         super.addItem(boss);
     }
     public void killBoss(){
@@ -37,16 +35,5 @@ public class BossArea extends ICMazeArea{
     public void draw(Canvas canvas) {
         super.draw(canvas);
     }
-    public void victory(){
-        victory = true;
-    }
 
-    @Override
-    public boolean isOff() {
-        return !victory;
-    }
-    @Override
-    public boolean isOn() {
-        return victory;
-    }
 }

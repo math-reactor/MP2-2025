@@ -1,6 +1,7 @@
 package ch.epfl.cs107.icmaze.actor;
 
 import ch.epfl.cs107.icmaze.actor.util.Cooldown;
+import ch.epfl.cs107.icmaze.handler.Damageable;
 import ch.epfl.cs107.play.areagame.actor.Interactable;
 import ch.epfl.cs107.play.areagame.actor.MovableAreaEntity;
 import ch.epfl.cs107.play.areagame.area.Area;
@@ -14,7 +15,7 @@ import ch.epfl.cs107.play.window.Keyboard;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class ICMazeActor extends MovableAreaEntity implements Interactable {
+public abstract class ICMazeActor extends MovableAreaEntity implements Interactable, Damageable {
     private boolean recovering = false;
     protected Health health;
     protected int drawFrame;
@@ -23,8 +24,6 @@ public abstract class ICMazeActor extends MovableAreaEntity implements Interacta
     public ICMazeActor(Area setArea, Orientation setOrient, DiscreteCoordinates setCoords){
         super(setArea, setOrient, setCoords);
     }
-
-    public abstract void beAttacked(int damage);
 
     public void enterArea(Area area, DiscreteCoordinates position){
         area.registerActor(this);
@@ -79,7 +78,7 @@ public abstract class ICMazeActor extends MovableAreaEntity implements Interacta
     }
     protected void handleAnim(OrientedAnimation UI, Canvas canvas){
         if (recovering){ //oscillating frames when damaged
-            if (drawFrame % 2 == 0){
+            if (drawFrame % 3 == 0){
                 UI.draw(canvas);
             }
             drawFrame += 1;

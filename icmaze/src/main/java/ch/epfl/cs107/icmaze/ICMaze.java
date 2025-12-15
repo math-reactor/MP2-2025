@@ -32,7 +32,7 @@ public class ICMaze extends AreaGame {
     public boolean begin(Window window, FileSystem fileSystem){
         if (super.begin(window , fileSystem)) {
             //Initializes the playing field
-            createAreas(LevelGenerator.generateLine(3));
+            createAreas(LevelGenerator.generateLine(4));
             setCurrentArea("ICMaze/Spawn", true);
             player = new ICMazePlayer(getCurrentArea(), Orientation.DOWN, new DiscreteCoordinates(5,5));
             player.enterArea(getCurrentArea(), new DiscreteCoordinates(5,5));
@@ -51,16 +51,22 @@ public class ICMaze extends AreaGame {
 
     public void switchArea(Portal receivedPortal){
         //switches the player's area when stepping into a portal
-        ((ICMazeArea) getCurrentArea()).clearList();
         getCurrentArea().unregisterActor(player);
-        ((ICMazeArea) getCurrentArea()).removeItem(player);
+        ((ICMazeArea) getCurrentArea()).removeItem(player, true);
+        ((ICMazeArea) getCurrentArea()).clearList();
         setCurrentArea(receivedPortal.getDestinationArea(), false);
         if (receivedPortal.getDestinationArea() == "ICMaze/Boss"){
             ((ICMazeArea) getCurrentArea()).setKeyVal(-1);
         }
+        if (victory){
+            ((ICMazeArea) getCurrentArea()).setVictory();
+            if (getCurrentArea() instanceof Spawn){
+                ((Spawn) getCurrentArea()).spawnReward();
+            }
+        }
         ((ICMazeArea) getCurrentArea()).renewList();
         player.enterArea(getCurrentArea(), receivedPortal.getDestinationCoordinates());
-        ((ICMazeArea) getCurrentArea()).addItem(player);
+        ((ICMazeArea) getCurrentArea()).addItem(player, true);
         getCurrentArea().setViewCandidate(player);
     }
 

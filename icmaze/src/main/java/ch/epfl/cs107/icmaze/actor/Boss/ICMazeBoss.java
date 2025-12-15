@@ -58,11 +58,12 @@ public class ICMazeBoss extends ICMazeActor {
     }
 
     public void beAttacked(int damage){
+        if (health.getHealth() > 1 && !getRecovery()){ // > 1, to prevent the key from being the key from being teleported away
+            teleportRandom();
+            UI.reset();
+        }
         if (angered){
             damageActor(damage);
-        }
-        if (health.getHealth() > 0 && !getRecovery()){
-            teleportRandom();
         }
         angered = true;
     }

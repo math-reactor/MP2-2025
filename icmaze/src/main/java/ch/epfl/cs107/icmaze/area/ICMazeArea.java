@@ -6,6 +6,7 @@ import ch.epfl.cs107.icmaze.actor.collectable.Heart;
 import ch.epfl.cs107.icmaze.actor.collectable.Key;
 import ch.epfl.cs107.icmaze.actor.collectable.Pickaxe;
 import ch.epfl.cs107.icmaze.area.maps.BossArea;
+import ch.epfl.cs107.icmaze.handler.Damageable;
 import ch.epfl.cs107.play.areagame.AreaGraph;
 import ch.epfl.cs107.play.areagame.actor.AreaEntity;
 import ch.epfl.cs107.play.areagame.actor.Interactable;
@@ -35,6 +36,7 @@ public abstract class ICMazeArea extends Area  implements Logic {
     private Window window;
     private String name;
     private int size;
+    private boolean victory;
 
     //portal information
     private String nextArea;
@@ -146,8 +148,6 @@ public abstract class ICMazeArea extends Area  implements Logic {
         }
     }
 
-    private void occupyCell(DiscreteCoordinates currPos, DiscreteCoordinates nextPos){}
-
     public void addItem(Actor Item, boolean isPlayer){
         //adds the created items into the area
         runThrough.add((Actor) Item);
@@ -165,11 +165,15 @@ public abstract class ICMazeArea extends Area  implements Logic {
             this.registerActor(actor);
             enterAreaCells((Interactable) actor, ((Interactable) actor).getCurrentCells());
         }
+        if (victory){
+            killAll();
+        }
     }
 
     public void removeItem(Actor Item){
         removeItem(Item, false);
     }
+
     public void removeItem(Actor Item, boolean isPlayer){
         //removes the given item from the list
         for (int i = 0; i < runThrough.size(); i++){
@@ -193,6 +197,14 @@ public abstract class ICMazeArea extends Area  implements Logic {
         }
     }
 
+    protected void killAll(){
+        for (Actor actor : runThrough){
+            if (actor instanceof Damageable){
+                ((Damageable) actor).beAttacked(100);
+            }
+        }
+    }
+
     public ICMazePlayer getPlayer(){
         for (Actor actor : runThrough){
             if (actor.getClass() == ICMazePlayer.class){
@@ -203,6 +215,19 @@ public abstract class ICMazeArea extends Area  implements Logic {
     }
     public String getAreaSize(){return name;}
     protected int getKeyVal(){return keyVal;}
+
+    public void setVictory(){
+        victory = true;
+    }
+
+    @Override
+    public boolean isOff() {
+        return !victory;
+    }
+    @Override
+    public boolean isOn() {
+        return victory;
+    }
 
     public void setKeyVal(int newKV){
         //edits the key ID of a portal
@@ -230,4 +255,5 @@ public abstract class ICMazeArea extends Area  implements Logic {
     public void update(float deltaTime) {
         super.update(deltaTime);
     }
+
 }

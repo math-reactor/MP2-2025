@@ -24,14 +24,12 @@ public abstract class MazeArea extends ICMazeArea {
 
     private int difficulty;
     private int[][] mazeGrid;
-    private boolean victory;
     private AreaGraph graph;
 
     public MazeArea(int setExitKey, int setDiff, String name){
         super(name, setExitKey);
         graph = new AreaGraph();
         difficulty = setDiff;
-        victory = false;
         int size = Size.getSize(name);
         inaccessibleEntranceCells = new DiscreteCoordinates[]{
                 new DiscreteCoordinates(size / 2 + 1, 1), //lower entrance
@@ -122,14 +120,6 @@ public abstract class MazeArea extends ICMazeArea {
             down = false;
         }
         createNode(row, col, up, left, down, right);
-    }
-    @Override
-    public boolean isOff() {
-        return !victory;
-    }
-    @Override
-    public boolean isOn() {
-        return victory;
     }
     protected void createLogMonsters() {
 

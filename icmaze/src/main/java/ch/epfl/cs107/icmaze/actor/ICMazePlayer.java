@@ -196,16 +196,16 @@ public class ICMazePlayer extends ICMazeActor implements Interactor {
         };
         public void interactWith(Key key, boolean isCellInteraction){
             if (!key.isCollected()){
-                memeorizedKeys.add(key.getID());
                 if (key.getID() == -1){
-                    ((BossArea) getOwnerArea()).victory();
+                    ((ICMazeArea) getOwnerArea()).setVictory();
                 }
+                memeorizedKeys.add(key.getID());
                 ((ICMazeArea) getOwnerArea()).removeItem(key);
             }
         };
         public void interactWith(Rock rock, boolean isCellInteraction){
             if (!isCellInteraction && currentState == PlayerStates.ATTACKING_WITH_PICKAXE){
-                rock.damage(MAX_DAMAGE);
+                rock.beAttacked(MAX_DAMAGE);
             }
         };
         public void interactWith(ICMazeBoss boss, boolean isCellInteraction){

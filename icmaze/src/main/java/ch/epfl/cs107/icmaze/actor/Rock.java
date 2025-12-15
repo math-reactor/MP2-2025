@@ -5,6 +5,7 @@ import ch.epfl.cs107.icmaze.actor.collectable.Heart;
 import ch.epfl.cs107.icmaze.actor.util.Cooldown;
 import ch.epfl.cs107.icmaze.area.ICMazeArea;
 import ch.epfl.cs107.icmaze.area.MazeArea;
+import ch.epfl.cs107.icmaze.handler.Damageable;
 import ch.epfl.cs107.icmaze.handler.ICMazeInteractionVisitor;
 import ch.epfl.cs107.play.areagame.actor.AreaEntity;
 import ch.epfl.cs107.play.areagame.area.Area;
@@ -21,7 +22,7 @@ import java.net.CookieHandler;
 import java.util.Collections;
 import java.util.List;
 
-public class Rock extends AreaEntity {
+public class Rock extends AreaEntity implements Damageable {
     private final int ANIMATION_DURATION = 24;
     private final static int MAX_LIFE = 3;
     private Sprite UI;
@@ -42,7 +43,7 @@ public class Rock extends AreaEntity {
         area.registerActor(this);
         setCurrentPosition(position.toVector());
     }
-    public void damage(int damage){
+    public void beAttacked(int damage){
         if (!recovering){
             health.decrease(damage);
             drawFrame = 0;

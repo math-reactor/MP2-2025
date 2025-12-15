@@ -19,29 +19,32 @@ import ch.epfl.cs107.play.window.Canvas;
 import java.util.ArrayList;
 
 public class Spawn extends ICMazeArea {
-    public boolean victory;
+    private boolean collected;
+
     public Spawn(int keyVal){
         super("SmallArea", keyVal);
     }
+
+
     public void createArea(){
         registerActor(new Background(this, getAreaSize()));
         //sets up the different sprites
         super.addItem(new Pickaxe(this, Orientation.DOWN, new DiscreteCoordinates(5,4)));
         super.addItem(new Heart(this, new DiscreteCoordinates(4,5)));
         super.addItem(new Key(this, Orientation.DOWN, new DiscreteCoordinates(6,5), getKeyVal()));
-        super.addItem(new FireProjectile(this, Orientation.UP, new DiscreteCoordinates(1,1)));
     }
+    public void spawnReward(){
+        if (!collected){
+            collected = true;
+            super.addItem(new Heart(this, new DiscreteCoordinates(5,5)));
+            super.addItem(new Heart(this, new DiscreteCoordinates(5,4)));
+            super.addItem(new Heart(this, new DiscreteCoordinates(6,5)));
+        }
+    }
+
     public String getTitle(){return "ICMaze/Spawn";}
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-    }
-    @Override
-    public boolean isOff() {
-        return !victory;
-    }
-    @Override
-    public boolean isOn() {
-        return victory;
     }
 }
