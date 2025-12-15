@@ -12,7 +12,7 @@ public class MediumArea extends MazeArea {
         //sets up the different sprites
         super.createArea();
         super.randomKey(getKeyVal());
-
+        createLogMonsters();
     }
     public String getTitle(){return "ICMaze/MediumArea["+getKeyVal()+"]";}
 }

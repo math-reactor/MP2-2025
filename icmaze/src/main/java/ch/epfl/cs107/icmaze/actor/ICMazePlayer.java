@@ -9,6 +9,7 @@ import ch.epfl.cs107.icmaze.actor.collectable.Pickaxe;
 import ch.epfl.cs107.icmaze.actor.util.Cooldown;
 import ch.epfl.cs107.icmaze.area.ICMazeArea;
 import ch.epfl.cs107.icmaze.area.ICMazeBehaviour;
+import ch.epfl.cs107.icmaze.area.MazeArea;
 import ch.epfl.cs107.icmaze.area.maps.BossArea;
 import ch.epfl.cs107.icmaze.handler.ICMazeInteractionVisitor;
 import ch.epfl.cs107.play.areagame.AreaGame;
@@ -46,7 +47,7 @@ public class ICMazePlayer extends ICMazeActor implements Interactor {
     final Orientation[] pickOrders = {Orientation.DOWN , Orientation.UP, Orientation.RIGHT , Orientation.LEFT};
     final Vector anchor = new Vector(0, 0);
     final Vector pickaxeAnchor = new Vector(-.5f, 0);
-    private final static int MAX_LIFE = 3;
+    private final static int MAX_LIFE = 4;
 
 
     private KeyBindings.PlayerKeyBindings keys = KeyBindings.PLAYER_KEY_BINDINGS;
@@ -77,6 +78,10 @@ public class ICMazePlayer extends ICMazeActor implements Interactor {
         if (key.isDown()){
             if (!isDisplacementOccurs()){
                 orientate(orient);
+                if (getOwnerArea() instanceof MazeArea){
+                    DiscreteCoordinates nextPos = getNextPosition(getOrientation(), getCurrentMainCellCoordinates());
+                    ((MazeArea) getOwnerArea()).occupyCell(getCurrentMainCellCoordinates(), nextPos);
+                }
                 move(ANIMATION_DURATION);
             }
         }
@@ -141,17 +146,18 @@ public class ICMazePlayer extends ICMazeActor implements Interactor {
     public void clearCurrentPortal() {currentPortal = null;}
 
     public void beAttacked(int damage){
-        if (!getRecovery()){
-            health.decrease(damage);
-            drawFrame = 0;
-            setRecovery(true);
-        }
+        damageActor(damage);
     }
+
+    public int getHealth(){return health.getHealth();}
 
     @Override
     public List<DiscreteCoordinates> getFieldOfViewCells() {
         return Collections.singletonList(getCurrentMainCellCoordinates().jump(getOrientation().toVector()));
     }
+
+    @Override
+    public boolean isViewInteractable() {return true;}
 
     @Override
     public boolean wantsCellInteraction() {
@@ -162,15 +168,12 @@ public class ICMazePlayer extends ICMazeActor implements Interactor {
     public boolean wantsViewInteraction() {
         return currentState == PlayerStates.INTERACTING || currentState == PlayerStates.ATTACKING_WITH_PICKAXE;
     }
-
+    @Override
     public void acceptInteraction(AreaInteractionVisitor v, boolean isCellInteraction) {
         ((ICMazeInteractionVisitor) v).interactWith(this , isCellInteraction);
     }
     @Override
     public void interactWith(Interactable other , boolean isCellInteraction) {
-        if (!isCellInteraction){
-            //System.out.println(other.getClass());
-        }
         other.acceptInteraction(interactionHandler , isCellInteraction);
     }
     private class ICMazePlayerInteractionHandler implements ICMazeInteractionVisitor{
@@ -208,6 +211,11 @@ public class ICMazePlayer extends ICMazeActor implements Interactor {
         public void interactWith(ICMazeBoss boss, boolean isCellInteraction){
             if (!isCellInteraction && currentState == PlayerStates.ATTACKING_WITH_PICKAXE){
                 boss.beAttacked(MAX_DAMAGE);
+            }
+        };
+        public void interactWith(LogMonster logMonster, boolean isCellInteraction){
+            if (!isCellInteraction && currentState == PlayerStates.ATTACKING_WITH_PICKAXE){
+                logMonster.beAttacked(MAX_DAMAGE);
             }
         };
         public void interactWith(Portal portal, boolean isCellInteraction) {

@@ -1,10 +1,7 @@
 package ch.epfl.cs107.icmaze.area;
 
 import ch.epfl.cs107.icmaze.RandomGenerator;
-import ch.epfl.cs107.icmaze.actor.Health;
-import ch.epfl.cs107.icmaze.actor.ICMazeActor;
-import ch.epfl.cs107.icmaze.actor.Portal;
-import ch.epfl.cs107.icmaze.actor.PortalState;
+import ch.epfl.cs107.icmaze.actor.*;
 import ch.epfl.cs107.icmaze.actor.collectable.Heart;
 import ch.epfl.cs107.icmaze.actor.collectable.Key;
 import ch.epfl.cs107.icmaze.actor.collectable.Pickaxe;
@@ -30,14 +27,12 @@ import java.util.List;
 
 public abstract class ICMazeArea extends Area  implements Logic {
     private final Portal[] portals = new Portal[AreaPortals.values().length];
-    public ArrayList<Actor> runThrough; //Contains all entities in this area, for easy access
-    public ArrayList<Health> healthbars = new ArrayList<>();;
+    private ArrayList<Actor> runThrough; //Contains all entities in this area, for easy access
     public final static float DEFAULT_SCALE_FACTOR = 11.f;
     public final static float DYNAMIC_SCALE_MULTIPLIER = 1.375f;
     public final static float MAXIMUM_SCALE = 30.f;
     private float cameraScaleFactor = DEFAULT_SCALE_FACTOR;
     private Window window;
-    private AreaGraph graph;
     private String name;
     private int size;
 
@@ -151,10 +146,17 @@ public abstract class ICMazeArea extends Area  implements Logic {
         }
     }
 
-    public void addItem(Actor Item){
+    private void occupyCell(DiscreteCoordinates currPos, DiscreteCoordinates nextPos){}
+
+    public void addItem(Actor Item, boolean isPlayer){
         //adds the created items into the area
         runThrough.add((Actor) Item);
-        this.registerActor(Item);
+        if (Item.getClass() != ICMazePlayer.class){
+            this.registerActor(Item);
+        }
+    }
+    public void addItem(Actor Item){
+        addItem(Item, false);
     }
 
     public void renewList(){
@@ -166,11 +168,16 @@ public abstract class ICMazeArea extends Area  implements Logic {
     }
 
     public void removeItem(Actor Item){
+        removeItem(Item, false);
+    }
+    public void removeItem(Actor Item, boolean isPlayer){
         //removes the given item from the list
         for (int i = 0; i < runThrough.size(); i++){
             if (runThrough.get(i).equals((Actor) Item)){
-                this.unregisterActor(Item);
-                purgeAreaCellsFrom((Interactable) runThrough.get(i));
+                if (!isPlayer){
+                    this.unregisterActor(Item);
+                    purgeAreaCellsFrom((Interactable) runThrough.get(i));
+                }
                 runThrough.remove(i);
                 break;
             }
@@ -186,6 +193,14 @@ public abstract class ICMazeArea extends Area  implements Logic {
         }
     }
 
+    public ICMazePlayer getPlayer(){
+        for (Actor actor : runThrough){
+            if (actor.getClass() == ICMazePlayer.class){
+                return (ICMazePlayer) actor;
+            }
+        }
+        return null;
+    }
     public String getAreaSize(){return name;}
     protected int getKeyVal(){return keyVal;}
 
@@ -195,20 +210,6 @@ public abstract class ICMazeArea extends Area  implements Logic {
         for (AreaPortals dir : AreaPortals.values()){
             getPortal(dir).setKeyId(newKV);
         }
-    }
-    protected void createGraph(){
-        graph = new AreaGraph();
-    }
-    protected void createNode(int row, int col, boolean up, boolean left, boolean down, boolean right){
-        //creates a pathfinding node for the graph
-        graph.addNode(new DiscreteCoordinates(col, row),left, up,right,down);
-    }
-    protected void randomKey(int keyID){
-        //creates a key at a random spot
-        List lst = graph.keySet();
-        Collections.shuffle(lst, RandomGenerator.rng);
-        DiscreteCoordinates randomCoords = (DiscreteCoordinates) lst.get(0);
-        addItem(new Key(this, Orientation.DOWN, randomCoords, keyID));
     }
 
     public void replaceWallByHeart(DiscreteCoordinates position){

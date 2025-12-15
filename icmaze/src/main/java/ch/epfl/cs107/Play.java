@@ -56,7 +56,6 @@ public class Play {
                     } catch (InterruptedException e) {
                         System.out.println("Thread sleep interrupted");
                     }
-
                     currentTime = System.nanoTime();
                     deltaTime = (currentTime - lastTime) / ONE_SEC;
 

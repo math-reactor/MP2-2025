@@ -1,7 +1,10 @@
 package ch.epfl.cs107.icmaze.actor;
 
 import ch.epfl.cs107.icmaze.area.ICMazeArea;
+import ch.epfl.cs107.icmaze.handler.ICMazeInteractionVisitor;
 import ch.epfl.cs107.play.areagame.actor.Interactable;
+import ch.epfl.cs107.play.areagame.actor.Interactor;
+import ch.epfl.cs107.play.areagame.handler.AreaInteractionVisitor;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.math.Orientation;
 
@@ -13,19 +16,13 @@ public abstract class PathFinderEnemy extends Enemy {
 
     private final int perceptionRadius;
 
-    protected PathFinderEnemy(ICMazeArea area,
-                              Orientation orientation,
-                              DiscreteCoordinates position,
-                              int initialLife,
-                              int perceptionRadius) {
+    protected PathFinderEnemy(ICMazeArea area, Orientation orientation, DiscreteCoordinates position, int initialLife, int perceptionRadius) {
         super(area, orientation, position, initialLife);
         this.perceptionRadius = perceptionRadius;
     }
 
 
     // ------------ INTERACTIONS ------------
-    public abstract void interactWith(Interactable other);
-
     public abstract Orientation getNextOrientation();
 
     @Override
@@ -51,6 +48,19 @@ public abstract class PathFinderEnemy extends Enemy {
 
     @Override
     public boolean wantsViewInteraction() {
-        return !isDead();
+        return health.getHealth() > 0;
+    }
+
+    @Override
+    public boolean isViewInteractable() {
+        return true;
+    }
+    @Override
+    public boolean isCellInteractable() {
+        return false;
+    }
+    @Override
+    public boolean takeCellSpace() {
+        return true;
     }
 }

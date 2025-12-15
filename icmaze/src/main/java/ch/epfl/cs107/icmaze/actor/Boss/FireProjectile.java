@@ -43,6 +43,9 @@ public class FireProjectile extends BossProjectile implements Interactor {
     }
 
     @Override
+    public void beAttacked(int damage) {}
+
+    @Override
     public void update(float deltaTime) {
         if (steps < MAXDISTANCE){
             anim.update(deltaTime);

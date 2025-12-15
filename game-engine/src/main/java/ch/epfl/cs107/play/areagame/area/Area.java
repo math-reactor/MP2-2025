@@ -336,6 +336,7 @@ public abstract class Area implements Playable, Graphics, PauseMenu.Pausable {
                     areaBehavior.cellInteractionOf(interactor);
                 }
                 if (interactor.wantsViewInteraction()) {
+                    //System.out.println(interactor.getClass());
                     areaBehavior.viewInteractionOf(interactor);
                 }
             }

@@ -53,12 +53,14 @@ public class ICMaze extends AreaGame {
         //switches the player's area when stepping into a portal
         ((ICMazeArea) getCurrentArea()).clearList();
         getCurrentArea().unregisterActor(player);
+        ((ICMazeArea) getCurrentArea()).removeItem(player);
         setCurrentArea(receivedPortal.getDestinationArea(), false);
         if (receivedPortal.getDestinationArea() == "ICMaze/Boss"){
             ((ICMazeArea) getCurrentArea()).setKeyVal(-1);
         }
         ((ICMazeArea) getCurrentArea()).renewList();
         player.enterArea(getCurrentArea(), receivedPortal.getDestinationCoordinates());
+        ((ICMazeArea) getCurrentArea()).addItem(player);
         getCurrentArea().setViewCandidate(player);
     }
 
@@ -73,8 +75,8 @@ public class ICMaze extends AreaGame {
     }
     @Override
     public void update(float deltaTime) {
-        if (getCurrentArea().getKeyboard().get(KeyBindings.RESET_GAME).isPressed()){
-            // the game is reset, when the player presses the R key
+        if (getCurrentArea().getKeyboard().get(KeyBindings.RESET_GAME).isPressed() || player.getHealth() <= 0){
+            // the game is reset, when the player presses the R key or dies
             begin(getWindow(), getFileSystem());
         }
         Portal receivedPortal = player.getCurrentPortal();

@@ -23,7 +23,9 @@ public class Key extends Equipment {
         super.draw(canvas);
     }
     public void acceptInteraction(AreaInteractionVisitor v, boolean isCellInteraction) {
-        ((ICMazeInteractionVisitor) v).interactWith(this , isCellInteraction);
-        collect();
+        if (isCellInteraction){
+            ((ICMazeInteractionVisitor) v).interactWith(this , isCellInteraction);
+            collect();
+        }
     }
 }

@@ -20,7 +20,7 @@ import java.util.List;
  * Health also implements Logic, which allows to know if the entity lost all of its health points or not.
  */
 public class Health implements Graphics, Logic {
-    public int STANDARD_COOLDOWN_TIME = 5;
+    public int STANDARD_COOLDOWN_TIME = 3;
     /**
      * A positionable to the parent entity to draw the health bar on top of
      */

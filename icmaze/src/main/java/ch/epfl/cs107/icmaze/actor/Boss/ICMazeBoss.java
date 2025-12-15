@@ -52,20 +52,17 @@ public class ICMazeBoss extends ICMazeActor {
         enterArea(currentArea, new DiscreteCoordinates(chosenPos[0], chosenPos[1]));
     }
 
-    @Override
     public void exitArea() {
         getOwnerArea().leaveAreaCells(this, getCurrentCells());
         getOwnerArea().unregisterActor(this);
     }
 
     public void beAttacked(int damage){
-        if (angered && !getRecovery()){
-            health.decrease(damage);
-            drawFrame = 0;
-            setRecovery(true);
-            if (health.getHealth() > 0){
-                teleportRandom();
-            }
+        if (angered){
+            damageActor(damage);
+        }
+        if (health.getHealth() > 0 && !getRecovery()){
+            teleportRandom();
         }
         angered = true;
     }

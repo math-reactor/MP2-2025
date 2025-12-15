@@ -147,8 +147,7 @@ public class AreaGraph {
          * @param hasDownEdge  (boolean): indicate if directed edge to the down
          *                     direction exists
          */
-        protected AreaNode(DiscreteCoordinates coordinates, boolean hasLeftEdge, boolean hasUpEdge,
-                           boolean hasRightEdge, boolean hasDownEdge) {
+        protected AreaNode(DiscreteCoordinates coordinates, boolean hasLeftEdge, boolean hasUpEdge, boolean hasRightEdge, boolean hasDownEdge) {
             this.coordinates = coordinates;
             this.hasLeftEdge = hasLeftEdge;
             this.hasUpEdge = hasUpEdge;
