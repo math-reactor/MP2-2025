@@ -5,6 +5,9 @@ import ch.epfl.cs107.play.areagame.area.AreaBehavior;
 import ch.epfl.cs107.play.areagame.handler.AreaInteractionVisitor;
 import ch.epfl.cs107.play.window.Window;
 
+/**
+ * Class, which represents the behavioral map associated with an associated ICMazeArea
+ */
 public class ICMazeBehaviour extends AreaBehavior {
     public ICMazeBehaviour(Window window, String name){
         super(window, name);

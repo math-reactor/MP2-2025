@@ -1,30 +1,18 @@
 package ch.epfl.cs107.icmaze.area;
 
-import ch.epfl.cs107.icmaze.RandomGenerator;
 import ch.epfl.cs107.icmaze.actor.*;
 import ch.epfl.cs107.icmaze.actor.collectable.Heart;
-import ch.epfl.cs107.icmaze.actor.collectable.Key;
-import ch.epfl.cs107.icmaze.actor.collectable.Pickaxe;
-import ch.epfl.cs107.icmaze.area.maps.BossArea;
 import ch.epfl.cs107.icmaze.handler.Damageable;
-import ch.epfl.cs107.play.areagame.AreaGraph;
-import ch.epfl.cs107.play.areagame.actor.AreaEntity;
 import ch.epfl.cs107.play.areagame.actor.Interactable;
 import ch.epfl.cs107.play.areagame.area.Area;
 import ch.epfl.cs107.play.engine.actor.Actor;
-import ch.epfl.cs107.play.engine.actor.Entity;
 import ch.epfl.cs107.play.io.FileSystem;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.math.Orientation;
-import ch.epfl.cs107.play.math.Vector;
-import ch.epfl.cs107.play.signal.Signal;
 import ch.epfl.cs107.play.signal.logic.Logic;
-import ch.epfl.cs107.play.window.Canvas;
 import ch.epfl.cs107.play.window.Window;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public abstract class ICMazeArea extends Area  implements Logic {
     private final Portal[] portals = new Portal[AreaPortals.values().length];
@@ -47,6 +35,11 @@ public abstract class ICMazeArea extends Area  implements Logic {
     private AreaPortals prevDir;
     private int keyVal;
 
+    /**
+     * Constructor for the ICMazeArea class, initializes the given area
+     * @param setName the name associated to theICMazeArea (gives an in dication to its size)
+     * @param setKeyVal the key value of this ICMazeArea
+     */
     public ICMazeArea(String setName, int setKeyVal){
         runThrough = new ArrayList<>();
         name = setName;
@@ -95,8 +88,12 @@ public abstract class ICMazeArea extends Area  implements Logic {
         }
     }
 
+    /**
+     * getter for the portal in the given AreaPortals direction
+     * @param direction the direction in which we want a portal
+     * @return Portal - the ICMazeArea's portal in the given direction
+     */
     public Portal getPortal(AreaPortals direction){
-        //getter for the portal in the given AreaPortals direction (@param direction)
         return portals[direction.ordinal()];
     }
     /**
@@ -289,8 +286,17 @@ public abstract class ICMazeArea extends Area  implements Logic {
      */
     public void setVictory(){victory = true; onVictory();}
 
+    /**
+     * Getter which returns whether the ICMazeArea's Logic signal is on
+     * @return boolean
+     */
     @Override
     public boolean isOff() {return !victory;}
+
+    /**
+     * Getter which returns whether the ICMazeArea's Logic signal is off
+     * @return boolean
+     */
     @Override
     public boolean isOn() {return victory;}
 

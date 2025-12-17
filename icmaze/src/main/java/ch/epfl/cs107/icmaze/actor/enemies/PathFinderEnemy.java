@@ -1,19 +1,23 @@
 package ch.epfl.cs107.icmaze.actor.enemies;
 
+import ch.epfl.cs107.icmaze.actor.ICMazeActor;
 import ch.epfl.cs107.icmaze.area.ICMazeArea;
+import ch.epfl.cs107.play.areagame.actor.Interactable;
+import ch.epfl.cs107.play.areagame.actor.Interactor;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.math.Orientation;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class PathFinderEnemy extends Enemy {
-
-
+/**
+ * Class, which represents the abstract concept of enemies that make use of pathfinding algorithms
+ */
+public abstract class PathFinderEnemy extends ICMazeActor implements Interactor {
     private final int perceptionRadius;
 
-    protected PathFinderEnemy(ICMazeArea area, Orientation orientation, DiscreteCoordinates position, int initialLife, int perceptionRadius) {
-        super(area, orientation, position, initialLife);
+    protected PathFinderEnemy(ICMazeArea area, Orientation orientation, DiscreteCoordinates position, int perceptionRadius) {
+        super(area, orientation, position);
         this.perceptionRadius = perceptionRadius;
     }
 
@@ -41,12 +45,10 @@ public abstract class PathFinderEnemy extends Enemy {
     public boolean wantsCellInteraction() {
         return false;
     }
-
     @Override
     public boolean wantsViewInteraction() {
         return health.getHealth() > 0;
     }
-
     @Override
     public boolean isViewInteractable() {
         return true;

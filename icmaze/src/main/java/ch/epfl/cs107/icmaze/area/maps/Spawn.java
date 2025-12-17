@@ -26,12 +26,13 @@ public class Spawn extends ICMazeArea {
     /**
      * method, which creates this Spawn area, by creating the background and then adding all necessary actors in
      */
+    @Override
     public void createArea(){
         registerActor(new Background(this, getAreaSize()));
         //sets up the different sprites
-        super.addItem(new Pickaxe(this, Orientation.DOWN, new DiscreteCoordinates(5,4)));
+        super.addItem(new Pickaxe(this, new DiscreteCoordinates(5,4)));
         super.addItem(new Heart(this, new DiscreteCoordinates(4,5)));
-        super.addItem(new Key(this, Orientation.DOWN, new DiscreteCoordinates(6,5), getKeyVal()));
+        super.addItem(new Key(this, new DiscreteCoordinates(6,5), getKeyVal()));
     }
 
     /**
@@ -51,10 +52,10 @@ public class Spawn extends ICMazeArea {
      */
     public String getTitle(){return "ICMaze/Spawn";}
 
-    @Override
     /**
      * method, which will redraw the current area
      */
+    @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
     }

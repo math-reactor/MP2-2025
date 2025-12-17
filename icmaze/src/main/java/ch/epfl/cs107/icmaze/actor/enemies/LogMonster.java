@@ -57,7 +57,7 @@ public class LogMonster extends PathFinderEnemy implements Interactor {
     private Queue<Orientation> currentPath;
 
     public LogMonster(ICMazeArea area, Orientation orientation, DiscreteCoordinates position, State initialState) {
-        super(area, orientation, position, MAX_LIFE, PERCEPTION_RADIUS);
+        super(area, orientation, position, PERCEPTION_RADIUS);
         health = new Health(this, Transform.I.translated(0, 1.25f), MAX_LIFE , false);
         setCd();
         this.state = initialState;
@@ -99,7 +99,7 @@ public class LogMonster extends PathFinderEnemy implements Interactor {
     }
 
     private boolean checkAccessible(Orientation orient){
-        return ((MazeArea) getOwnerArea()).isAccessible(getNextPosition(orient, getCurrentMainCellCoordinates()));
+        return ((MazeArea) getOwnerArea()).isAccessible(getNextPosition(orient));
     }
 
     private void handleWanderingState() {
@@ -157,7 +157,7 @@ public class LogMonster extends PathFinderEnemy implements Interactor {
     // ---------------- PATHFINDING / VISION ----------------
     private void occupyNextCell(){
         //renders the occupied cell inaccesible on the graph associated to the MazeArea and frees up the currently occupied tile
-        DiscreteCoordinates nextPos = getNextPosition(getOrientation(), getCurrentMainCellCoordinates());
+        DiscreteCoordinates nextPos = getNextPosition(getOrientation());
         ((MazeArea) getOwnerArea()).occupyCell(getCurrentMainCellCoordinates(), nextPos);
     }
     @Override

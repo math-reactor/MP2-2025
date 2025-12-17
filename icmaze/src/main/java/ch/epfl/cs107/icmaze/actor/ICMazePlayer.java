@@ -99,6 +99,7 @@ public class ICMazePlayer extends ICMazeActor implements Interactor {
      * method, which draws the player on the provided canvas
      * @param canvas the canvas on which the player will be drawn
      */
+    @Override
     public void draw(Canvas canvas){
         //the attacking animation is only played, when the player has attacked with his attacking
         if (!attacking){
@@ -134,6 +135,7 @@ public class ICMazePlayer extends ICMazeActor implements Interactor {
      * method, which updates the player object, based on player input
      * @param deltaTime -time variation (double)
      */
+    @Override
     public void update(float deltaTime) {
         handleRecovery(deltaTime);
         switch (currentState){
@@ -199,50 +201,54 @@ public class ICMazePlayer extends ICMazeActor implements Interactor {
      */
     public int getHealth(){return health.getHealth();}
 
-    @Override
     /**
      * method, which returns the cell directly in front of the player
      * @return List<DiscreteCoordinates> - the list containing only the cell right in front of the player
      */
+    @Override
     public List<DiscreteCoordinates> getFieldOfViewCells() {
         return Collections.singletonList(getCurrentMainCellCoordinates().jump(getOrientation().toVector()));
     }
 
-    @Override
     /**
      * method, which returns whether the player can be interacted with through view interactions
      * @return true, as the player is always interactable through view interactions
      */
+    @Override
     public boolean isViewInteractable() {return true;}
 
-    @Override
     /**
      * method, which returns whether the player can do view interactions himself
      * @return true, as the player can always interact through view interactions
      */
+    @Override
     public boolean wantsCellInteraction() {
         return true;
     }
 
-    @Override
     /**
      * method, which returns whether the player can object is currently able to do a view interaction
      * @return boolean - whether the player is in a state, which allows for view interactions
      */
-    public boolean wantsViewInteraction() {
-        return currentState == PlayerStates.INTERACTING || attacking;
-    }
     @Override
+    public boolean wantsViewInteraction() {
+        return currentState == PlayerStates.INTERACTING || currentState == PlayerStates.ATTACKING_WITH_PICKAXE;
+    }
     /**
      * method, which accepts any interaction by another actor, by allowing their interaction handler to proceed
+     * @param v the other Interactor, which wants to interact with the Player
+     * @param isCellInteraction whether this is a cell interaction
      */
+    @Override
     public void acceptInteraction(AreaInteractionVisitor v, boolean isCellInteraction) {
         ((ICMazeInteractionVisitor) v).interactWith(this , isCellInteraction);
     }
-    @Override
     /**
      * method, which asks another actor, if it can proceed with an interaction with that other actor
+     * @param other the other Interactable, with which the player wants to interact with
+     * @param isCellInteraction whether this is a cell interaction
      */
+    @Override
     public void interactWith(Interactable other , boolean isCellInteraction) {
         other.acceptInteraction(interactionHandler , isCellInteraction);
     }

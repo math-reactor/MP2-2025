@@ -37,7 +37,7 @@ public class BossArea extends ICMazeArea{
         DiscreteCoordinates bossPos = boss.getCurrentMainCellCoordinates();
         removeItem(boss); //finally removes the boss
         //creates a key in the boss' death position
-        Key newKey = new Key(this, Orientation.DOWN, bossPos, -1);
+        Key newKey = new Key(this, bossPos, -1);
         addItem(newKey);
     }
     /**

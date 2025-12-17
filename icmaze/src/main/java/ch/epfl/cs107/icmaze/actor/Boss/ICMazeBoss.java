@@ -77,11 +77,11 @@ public class ICMazeBoss extends ICMazeActor {
         getOwnerArea().unregisterActor(this);
     }
 
-    @Override
     /**
      * method, which allows the player to damage the boss
      * @param damage the damage inflicted to the boss (int)
      */
+    @Override
     public void beAttacked(int damage){
         if (health.getHealth() > 1 && !getRecovery()){
             // > 1, to prevent the key from being the key from being teleported away, when the boss is damaged
@@ -94,20 +94,20 @@ public class ICMazeBoss extends ICMazeActor {
         angered = true;
     }
 
-    @Override
     /**
      * method, which returns whether the boss prevents the player from walking through it
      * @return true, as the boss can't be walked through
      */
+    @Override
     public boolean takeCellSpace(){
         return true;
     }
 
-    @Override
     /**
      * method, which returns whether the boss can be interacted with through view interactions
      * @return true, as the boss can only be attacked with view interactions
      */
+    @Override
     public boolean isViewInteractable() {
         return true;
     }
@@ -143,11 +143,11 @@ public class ICMazeBoss extends ICMazeActor {
         }
     }
 
-    @Override
     /**
      * method, which handles the updating of the boss
      * @param deltaTime the time variation
      */
+    @Override
     public void update(float deltaTime) {
         if (health.getHealth() > 0){
             if (angered){ //the boss will be activated, after first being hit
@@ -172,11 +172,11 @@ public class ICMazeBoss extends ICMazeActor {
         }
     }
 
-    @Override
     /**
      * method, updates the boss' animation based on its current state
      * @param canvas the canvas on which the boss is drawn upon
      */
+    @Override
     public void draw(Canvas canvas) {
         if (health.getHealth() > 0){
             handleAnim(UI, canvas); //default animation when it is still at full health
@@ -187,10 +187,12 @@ public class ICMazeBoss extends ICMazeActor {
             }
         }
     }
-    @Override
     /**
      * method, allows other Interactors to interact with the boss
+     * @param v the other Interactor, which wants to interact with the boss
+     * @param isCellInteraction A boolean, which gives whether this is a cell interaction or not
      */
+    @Override
     public void acceptInteraction(AreaInteractionVisitor v, boolean isCellInteraction) {
         ((ICMazeInteractionVisitor) v).interactWith(this, isCellInteraction);
     }

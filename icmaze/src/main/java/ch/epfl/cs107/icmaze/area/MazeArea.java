@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
 
+
 public abstract class MazeArea extends ICMazeArea {
     private final int MAX_ENEMIES;
 
@@ -73,7 +74,7 @@ public abstract class MazeArea extends ICMazeArea {
         List lst = graph.keySet();
         Collections.shuffle(lst, RandomGenerator.rng);
         DiscreteCoordinates randomCoords = (DiscreteCoordinates) lst.get(0);
-        addItem(new Key(this, Orientation.DOWN, randomCoords, keyID));
+        addItem(new Key(this, randomCoords, keyID));
     }
 
     public void makePointWalkable(DiscreteCoordinates coords){
