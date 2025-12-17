@@ -1,10 +1,6 @@
-package ch.epfl.cs107.icmaze.actor;
+package ch.epfl.cs107.icmaze.actor.enemies;
 
 import ch.epfl.cs107.icmaze.area.ICMazeArea;
-import ch.epfl.cs107.icmaze.handler.ICMazeInteractionVisitor;
-import ch.epfl.cs107.play.areagame.actor.Interactable;
-import ch.epfl.cs107.play.areagame.actor.Interactor;
-import ch.epfl.cs107.play.areagame.handler.AreaInteractionVisitor;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.math.Orientation;
 

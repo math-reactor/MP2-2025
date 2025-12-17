@@ -3,16 +3,21 @@ package ch.epfl.cs107.icmaze.area;
 import java.util.*;
 
 import ch.epfl.cs107.icmaze.Difficulty;
-import ch.epfl.cs107.icmaze.ICMaze;
-import ch.epfl.cs107.icmaze.RandomGenerator;
-import ch.epfl.cs107.icmaze.actor.Portal;
-import ch.epfl.cs107.icmaze.actor.PortalState;
 import ch.epfl.cs107.icmaze.area.maps.*;
 
 import static ch.epfl.cs107.icmaze.RandomGenerator.rng;
 
+/**
+ * Utility class for the procedural generation of a sequence of game levels, based on the wanted length.
+ */
 public class LevelGenerator {
-    private final static int MINIMAL_LENGTH = 2;
+    private final static int MINIMAL_LENGTH = 2; //the minimal possible number of levels in a game
+
+    /**
+     * method, which generates a table of connected ICMazeAreas, with the provided length
+     * @param length the desired number of total game levels (default value is 2, 1x Spawn and 1x BossArea)
+     * @return ICMazeArea[] - the table of connected ICMazeAreas created by this method
+     */
     public static ICMazeArea[] generateLine(int length){
         if (length < MINIMAL_LENGTH){
             length = MINIMAL_LENGTH;

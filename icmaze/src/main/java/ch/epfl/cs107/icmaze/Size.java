@@ -9,6 +9,11 @@ public final class Size {
     public static final int MEDIUM = 16;
     public static final int LARGE = 32;
 
+    /**
+    *method to get the area's size based on its name
+     * @param areaSize the area's name
+     * @return the quadratic area's size, an int
+    */
     public static int getSize(String areaSize){
         if (areaSize == "SmallArea"){
             return SMALL;

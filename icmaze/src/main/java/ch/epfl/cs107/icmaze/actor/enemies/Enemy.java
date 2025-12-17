@@ -1,4 +1,4 @@
-package ch.epfl.cs107.icmaze.actor;   // adapte le package
+package ch.epfl.cs107.icmaze.actor.enemies;   // adapte le package
 
 // imports à adapter selon ton projet
 // import ch.epfl.cs107.play.window.Canvas;
@@ -7,6 +7,7 @@ package ch.epfl.cs107.icmaze.actor;   // adapte le package
 // import ch.epfl.cs107.play.game.areagame.actor.*;
 // import ch.epfl.cs107.play.game.areagame.Area;
 
+import ch.epfl.cs107.icmaze.actor.ICMazeActor;
 import ch.epfl.cs107.icmaze.area.ICMazeArea;
 import ch.epfl.cs107.play.areagame.actor.Interactable;
 import ch.epfl.cs107.play.areagame.actor.Interactor;
@@ -19,9 +20,11 @@ public abstract class Enemy extends ICMazeActor implements Interactor, Interacta
         super(area, orientation, position);
     }
 
+
     public final boolean isDead() {
         return health.getHealth() <= 0;
     }
+
 
     @Override
     public boolean takeCellSpace() {

@@ -1,16 +1,14 @@
-package ch.epfl.cs107.icmaze.actor;
+package ch.epfl.cs107.icmaze.actor.enemies;
 
-import ch.epfl.cs107.icmaze.actor.Boss.ICMazeBoss;
-import ch.epfl.cs107.icmaze.actor.util.Cooldown;
+import ch.epfl.cs107.icmaze.actor.Health;
+import ch.epfl.cs107.icmaze.actor.ICMazePlayer;
 import ch.epfl.cs107.icmaze.RandomGenerator;
 import ch.epfl.cs107.icmaze.area.ICMazeArea;
 import ch.epfl.cs107.icmaze.area.MazeArea;
-import ch.epfl.cs107.icmaze.area.maps.BossArea;
 import ch.epfl.cs107.icmaze.handler.ICMazeInteractionVisitor;
 import ch.epfl.cs107.play.areagame.actor.Interactable;
 import ch.epfl.cs107.play.areagame.actor.Interactor;
 import ch.epfl.cs107.play.areagame.handler.AreaInteractionVisitor;
-import ch.epfl.cs107.play.engine.actor.Actor;
 import ch.epfl.cs107.play.engine.actor.Animation;
 import ch.epfl.cs107.play.engine.actor.OrientedAnimation;
 import ch.epfl.cs107.play.engine.actor.Path;
@@ -20,7 +18,6 @@ import ch.epfl.cs107.play.math.Transform;
 import ch.epfl.cs107.play.math.Vector;
 import ch.epfl.cs107.play.window.Canvas;
 
-import javax.print.attribute.standard.MediaSize;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -57,6 +54,7 @@ public class LogMonster extends PathFinderEnemy implements Interactor {
     private Animation poof;
     private Path graphicPath;
     private LogMonsterInteractionHandler interactionHandler;
+    private Queue<Orientation> currentPath;
 
     public LogMonster(ICMazeArea area, Orientation orientation, DiscreteCoordinates position, State initialState) {
         super(area, orientation, position, MAX_LIFE, PERCEPTION_RADIUS);
@@ -168,10 +166,17 @@ public class LogMonster extends PathFinderEnemy implements Interactor {
             return getOrientation();
         }
         Queue<Orientation> path = ((MazeArea) getOwnerArea()).shortestPath(getCurrentMainCellCoordinates(), memorizedTarget.getCurrentMainCellCoordinates());
-        if (path != null){
-            graphicPath = new Path(this.getPosition(), new LinkedList<Orientation>(path));
+        if (path != null && !path.isEmpty()){
+            //graphicPath = new Path(this.getPosition(), new LinkedList<Orientation>(path));
+            currentPath = path;
         }
         if (path == null || path.isEmpty()) {
+            if (currentPath != null){ //continue follownig the current path, if it isn't null
+                Orientation polled = currentPath.poll();
+                if (polled != null){
+                    return polled;
+                }
+            }
             return getOrientation();
         }
         return path.poll();

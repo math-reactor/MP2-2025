@@ -4,23 +4,20 @@ import ch.epfl.cs107.icmaze.Difficulty;
 import ch.epfl.cs107.icmaze.MazeGenerator;
 import ch.epfl.cs107.icmaze.RandomGenerator;
 import ch.epfl.cs107.icmaze.Size;
-import ch.epfl.cs107.icmaze.actor.LogMonster;
+import ch.epfl.cs107.icmaze.actor.enemies.LogMonster;
 import ch.epfl.cs107.icmaze.actor.Rock;
 import ch.epfl.cs107.icmaze.actor.collectable.Key;
 import ch.epfl.cs107.play.areagame.AreaGraph;
-import ch.epfl.cs107.play.areagame.actor.Interactable;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.math.Orientation;
 import ch.epfl.cs107.play.signal.logic.Logic;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 
 public abstract class MazeArea extends ICMazeArea {
-    private final DiscreteCoordinates[] inaccessibleEntranceCells;
-    private final int MAX_ENEMIES = 3;
+    private final int MAX_ENEMIES;
 
     private int difficulty;
     private int[][] mazeGrid;
@@ -30,17 +27,7 @@ public abstract class MazeArea extends ICMazeArea {
         super(name, setExitKey);
         graph = new AreaGraph();
         difficulty = setDiff;
-        int size = Size.getSize(name);
-        inaccessibleEntranceCells = new DiscreteCoordinates[]{
-                new DiscreteCoordinates(size / 2 + 1, 1), //lower entrance
-                new DiscreteCoordinates(size / 2, 1),
-                new DiscreteCoordinates(size / 2 + 1, size), //upper entrance
-                new DiscreteCoordinates(size / 2, size),
-                new DiscreteCoordinates(size, size / 2 + 1), //right entrance
-                new DiscreteCoordinates(size, size / 2),
-                new DiscreteCoordinates(1, size / 2 + 1), //left entrance
-                new DiscreteCoordinates(1, size / 2)
-        };
+        MAX_ENEMIES = Size.getSize(name)/4;
     }
     public void createArea(){
         mazeGrid = MazeGenerator.createMaze(getWidth()-2, getHeight()-2, difficulty);
@@ -51,9 +38,7 @@ public abstract class MazeArea extends ICMazeArea {
                     addItem(new Rock(this, new DiscreteCoordinates(col,row)));
                 }
                 else{
-                    if (isNotEntrance(new DiscreteCoordinates(col,row))){
-                        setupNode(mazeGrid, row, col);
-                    }
+                    setupNode(mazeGrid, row, col);
                 }
             }
         }
@@ -68,15 +53,8 @@ public abstract class MazeArea extends ICMazeArea {
         }
     }
 
-    private boolean isNotEntrance(DiscreteCoordinates newLoc){
-        boolean accessible = true;
-        for (DiscreteCoordinates inaccessible : inaccessibleEntranceCells){
-            if (inaccessible.equals(newLoc)){
-                accessible = false;
-                break;
-            }
-        }
-        return accessible;
+    public void onVictory(){
+        killAll();
     }
 
     public boolean isAccessible(DiscreteCoordinates newLoc){
@@ -107,26 +85,13 @@ public abstract class MazeArea extends ICMazeArea {
         boolean left = true;
         boolean down = true;
         boolean up = true;
-        if (col == 1 || col != 1 && (grid[row-1][col-2] == 1)){ //the second condition checks if the neighboring cells are walls or not
-            left = false;
-        }
-        if (col == grid[0].length || (col != grid[0].length && grid[row-1][col] == 1)) {
-            right = false;
-        }
-        if (row == grid.length || (row != grid.length &&grid[row][col-1] == 1)){
-            up = false;
-        }
-        if (row == 1 || (row != 1 && grid[row-2][col-1] == 1)) {
-            down = false;
-        }
         createNode(row, col, up, left, down, right);
     }
-    protected void createLogMonsters() {
 
+    protected void createLogMonsters() {
         // version simple : on ne rebranche pas encore sur la vraie Difficulty,
         // on met diffRatio = 1.0 pour ne pas se prendre la tête maintenant.
         double diffRatio = Math.min(1.0, (double) Difficulty.HARDEST / difficulty);
-
         for (int number = 0; number < MAX_ENEMIES; number++){
             if (RandomGenerator.rng.nextDouble() < 0.25 + 0.60 * diffRatio){
                 // position aléatoire sur le graphe (méthode utilitaire d’ICMazeArea)

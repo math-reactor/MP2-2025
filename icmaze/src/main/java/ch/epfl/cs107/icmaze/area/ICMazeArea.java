@@ -63,7 +63,6 @@ public abstract class ICMazeArea extends Area  implements Logic {
      * @param fileSystem (FileSystem): given file system. Not null
      * @return true if the area is instantiated correctly, false otherwise
      */
-
     @Override
     public boolean begin(Window window, FileSystem fileSystem) {
         this.window = window;
@@ -77,7 +76,9 @@ public abstract class ICMazeArea extends Area  implements Logic {
         }
         return false;
     }
-
+    /**
+    *enum, which gives us all four possible orientations of the AreaPortals in an area
+     */
     public enum AreaPortals {
         N(Orientation.UP),
         W(Orientation.LEFT),
@@ -95,27 +96,45 @@ public abstract class ICMazeArea extends Area  implements Logic {
     }
 
     public Portal getPortal(AreaPortals direction){
+        //getter for the portal in the given AreaPortals direction (@param direction)
         return portals[direction.ordinal()];
     }
-
+    /**
+        * Setter of the teleportation data of the area's entry portal
+        * @param setPrevAreaSize (String): the size of the previous area (SmallArea - 8, MediumArea - 16, LargeArea - 32)
+        * @param setPrevArea (String): the previous area's name, which will identify where to teleport the player
+        * @param setPrevDir (AreaPortals): the orientation of the previous area's portal (which allowed the player to enter this area) in the previous area
+        * @return void
+     */
     public void setPreviousPortal(String setPrevAreaSize, String setPrevArea, AreaPortals setPrevDir){
         //sets the open (exit) portal of the current area
         prevAreaSize = setPrevAreaSize;
         prevArea = setPrevArea;
         prevDir = setPrevDir;
     }
-
+    /**
+     * Setter of the teleportation data of the area's exit portal
+     * @param setNextAreaSize (String): the size of the previous area (SmallArea - 8, MediumArea - 16, LargeArea - 32)
+     * @param setNextArea (String): the previous area's name, which will identify where to teleport the player
+     * @param setNextDir (AreaPortals): the orientation of the next area's portal (to thich the player will teleport to, if he moves forward)
+     * @return void
+     */
     public void setNextPortal(String setNextAreaSize, String setNextArea, AreaPortals setNextDir){
         //sets the closed (next) portal of the current area
         nextAreaSize = setNextAreaSize;
         nextArea = setNextArea;
         nextDir = setNextDir;
     }
-
+    /**
+     * setup of the Area's four default portals. If they don't have their data set by setPreviousPortal or setNextPortal,
+     * they are considered as in their default state and will therefore be blocked off, using tree sprites and an invisible wall.
+     * @return void
+     */
     private void initPortals() {
-        //initlailzes all four portals in the current area
+        //initlailzes all four portals in the current area's four directions
         for (AreaPortals ap : AreaPortals.values()) {
             DiscreteCoordinates mainCell;
+            //gives the main coordinate for the graphic placement of the portal
             switch (ap) {
                 case N -> mainCell = new DiscreteCoordinates(size / 2 - 1, size-1);
                 case S -> mainCell = new DiscreteCoordinates(size / 2 - 1, 0);
@@ -123,12 +142,13 @@ public abstract class ICMazeArea extends Area  implements Logic {
                 case E -> mainCell = new DiscreteCoordinates(size-1, size / 2-1);
                 default -> throw new IllegalStateException();
             }
-            Orientation spriteOrientation = ap.getOrientation();
 
+            //default values for the setup of the portal
+            Orientation spriteOrientation = ap.getOrientation();
             String destAreaName = null;
             DiscreteCoordinates defaultSpawn = new DiscreteCoordinates(1,1);
-
             Portal portal = new Portal(this, spriteOrientation, mainCell, destAreaName, defaultSpawn, keyVal);
+
             //creates an open or locked door, based on the area's attributes
             if (ap == nextDir || ap == prevDir){
                 if (ap == prevDir){
@@ -147,18 +167,34 @@ public abstract class ICMazeArea extends Area  implements Logic {
             addItem(portal);
         }
     }
-
+    /**
+     * Adds a given item to the list of Actors, which are present in the current area. This enables for easier access
+     * @param Item the item to add to the list
+     * @param isPlayer whether the added item is a player. This decides whether the function will register the player
+     * @return void
+     */
     public void addItem(Actor Item, boolean isPlayer){
         //adds the created items into the area
         runThrough.add((Actor) Item);
-        if (Item.getClass() != ICMazePlayer.class){
+        if (!isPlayer){
             this.registerActor(Item);
         }
     }
+
+    /**
+     * default version of the addItem(Actor Item, boolean isPlayer) method. It is used for everything that isn't a player
+     * @param Item the item to add to the list
+     * @return void
+     */
     public void addItem(Actor Item){
         addItem(Item, false);
     }
 
+    /**
+     * updates the items that are present in the current area's list, by registering them all,
+     * and by making them all enter the current area. This method is to be used when areas are switched
+     * @return void
+     */
     public void renewList(){
         //registers all the actors of the current area
         for (Actor actor : runThrough){
@@ -170,10 +206,12 @@ public abstract class ICMazeArea extends Area  implements Logic {
         }
     }
 
-    public void removeItem(Actor Item){
-        removeItem(Item, false);
-    }
-
+    /**
+     * completely removes a given item from the current area's list of present actors
+     * @param Item the item to completely remove (if it isn't a pleyer)
+     * @param isPlayer whether the item is a player. If true, we suppose that the game will handle player transit
+     * @return void
+     */
     public void removeItem(Actor Item, boolean isPlayer){
         //removes the given item from the list
         for (int i = 0; i < runThrough.size(); i++){
@@ -188,6 +226,19 @@ public abstract class ICMazeArea extends Area  implements Logic {
         }
     }
 
+    /**
+     * default version of the removeItem(Actor Item, boolean isPlayer), specifically for non-player actors
+     * @param Item the item to completely remove (if it isn't a pleyer)
+     * @return void
+     */
+    public void removeItem(Actor Item){
+        removeItem(Item, false);
+    }
+
+    /**
+     * clears the current area's list of actors (not completely). This is used to remove all traces of the current area during area transits
+     * @return void
+     */
     public void clearList(){
         //removes all actors in the current area
         int maxSize = runThrough.size();
@@ -196,15 +247,21 @@ public abstract class ICMazeArea extends Area  implements Logic {
             purgeAreaCellsFrom((Interactable) runThrough.get(i));
         }
     }
-
+    /**
+     * Kills all the actors of the Damageable type, which are present in the current area
+     * @return void
+     */
     protected void killAll(){
         for (Actor actor : runThrough){
             if (actor instanceof Damageable){
-                ((Damageable) actor).beAttacked(100);
+                ((Damageable) actor).beAttacked(Integer.MAX_VALUE);
             }
         }
     }
-
+    /**
+     * Method to obtain the current area's player actor
+     * @return ICMazePlayer or null
+     */
     public ICMazePlayer getPlayer(){
         for (Actor actor : runThrough){
             if (actor.getClass() == ICMazePlayer.class){
@@ -213,22 +270,35 @@ public abstract class ICMazeArea extends Area  implements Logic {
         }
         return null;
     }
+
+    /**
+     * Getter to obtain the current area's name, which is associated to its size
+     * @return String name
+     */
     public String getAreaSize(){return name;}
+
+    /**
+     * Getter to obtain the current area's key value
+     * @return int key value
+     */
     protected int getKeyVal(){return keyVal;}
 
-    public void setVictory(){
-        victory = true;
-    }
+    /**
+     * Setter to obtain the set the current area's victory status to true. It then launches whatever event happens after the victory
+     * @return void
+     */
+    public void setVictory(){victory = true; onVictory();}
 
     @Override
-    public boolean isOff() {
-        return !victory;
-    }
+    public boolean isOff() {return !victory;}
     @Override
-    public boolean isOn() {
-        return victory;
-    }
+    public boolean isOn() {return victory;}
 
+    /**
+     * Setter to modify the current area's key value. This is only used to block the player inside of BossArea
+     * @param newKV the new key value to assign to the current area
+     * @return void
+     */
     public void setKeyVal(int newKV){
         //edits the key ID of a portal
         keyVal = newKV;
@@ -237,6 +307,11 @@ public abstract class ICMazeArea extends Area  implements Logic {
         }
     }
 
+    /**
+     * Method, which creates a collectible Heart in the position of a previously present wall in the same spot
+     * @param position the position, where the new heart will be created
+     * @return void
+     */
     public void replaceWallByHeart(DiscreteCoordinates position){
         //creates a heart, when a wall is broken, at a certain probability
         Heart newH = new Heart(this, position);
@@ -244,16 +319,24 @@ public abstract class ICMazeArea extends Area  implements Logic {
     }
     /**
      * Getter for Tuto1's scale factor
-     * @return Scale factor in both the x-direction and the y-direction
+     * @return float Scale factor in both the x-direction and the y-direction
      */
     @Override
     //public final float getCameraScaleFactor() {return 10f;}
     public float getCameraScaleFactor() {
         return (float) Math.min(getWidth() * DYNAMIC_SCALE_MULTIPLIER , MAXIMUM_SCALE);
     }
+
+    /**
+     * Method, which updates the current area
+     */
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
     }
 
+    /**
+     * Method, which defines what happens, when the current area is launched
+     */
+    public abstract void onVictory();
 }
