@@ -1,5 +1,6 @@
 package ch.epfl.cs107.icmaze.actor;
 
+import ch.epfl.cs107.icmaze.ICMaze;
 import ch.epfl.cs107.icmaze.KeyBindings;
 import ch.epfl.cs107.icmaze.actor.Boss.ICMazeBoss;
 import ch.epfl.cs107.icmaze.actor.collectable.Heart;
@@ -137,36 +138,38 @@ public class ICMazePlayer extends ICMazeActor implements Interactor {
      */
     @Override
     public void update(float deltaTime) {
-        handleRecovery(deltaTime);
-        switch (currentState){
-            case IDLE -> {
-                //movement, attack and interraction key handling
-                displace(keyboard.get(keys.left()), Orientation.LEFT);
-                displace(keyboard.get(keys.up()), Orientation.UP);
-                displace(keyboard.get(keys.down()), Orientation.DOWN);
-                displace(keyboard.get(keys.right()), Orientation.RIGHT);
-                if (keyboard.get(keys.pickaxe()).isPressed() && hasPickaxe && !attacking){
-                    currentState = PlayerStates.ATTACKING_WITH_PICKAXE;
+        super.update(deltaTime);
+        if (!ICMaze.runningDialog() && !ICMaze.isGamePaused()){ //met seulement le joueur à jour, s'il n'y a pas de dialogue
+            handleRecovery(deltaTime);
+            switch (currentState){
+                case IDLE -> {
+                    //movement, attack and interraction key handling
+                    displace(keyboard.get(keys.left()), Orientation.LEFT);
+                    displace(keyboard.get(keys.up()), Orientation.UP);
+                    displace(keyboard.get(keys.down()), Orientation.DOWN);
+                    displace(keyboard.get(keys.right()), Orientation.RIGHT);
+                    if (keyboard.get(keys.pickaxe()).isPressed() && hasPickaxe && !attacking){
+                        currentState = PlayerStates.ATTACKING_WITH_PICKAXE;
+                    }
+                    if (keyboard.get(keys.interact()).isPressed()) {
+                        currentState = PlayerStates.INTERACTING;
+                    }
+                    UI.update(deltaTime);
+                    runAnim(deltaTime);
                 }
-                if (keyboard.get(keys.interact()).isPressed()) {
-                    currentState = PlayerStates.INTERACTING;
+                case INTERACTING -> {
+                    //resets the player's state, when he lets go of the key
+                    if (!keyboard.get(keys.interact()).isDown()) {
+                        currentState = PlayerStates.IDLE;
+                    }
                 }
-                UI.update(deltaTime);
-                runAnim(deltaTime);
-            }
-            case INTERACTING -> {
-                //resets the player's state, when he lets go of the key
-                if (!keyboard.get(keys.interact()).isDown()) {
+                case ATTACKING_WITH_PICKAXE -> {
+                    //resets the player's state, and turns the attacking attribute true, when the player attacks
                     currentState = PlayerStates.IDLE;
+                    attacking = true;
                 }
-            }
-            case ATTACKING_WITH_PICKAXE -> {
-                //resets the player's state, and turns the attacking attribute true, when the player attacks
-                currentState = PlayerStates.IDLE;
-                attacking = true;
             }
         }
-        super.update(deltaTime);
     }
 
     /**
@@ -350,6 +353,8 @@ public class ICMazePlayer extends ICMazeActor implements Interactor {
                 int neededKey = portal.getKeyId();
                 if (neededKey == Portal.NO_KEY_ID || checkKey(neededKey)) {
                     portal.setState(PortalState.OPEN);
+                }else {
+                    ICMaze.noKeyDialog();
                 }
             }
             //if the player steps into the portal instead, sets his currentPortal attribute to this portal

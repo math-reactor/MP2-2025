@@ -1,4 +1,5 @@
 <strings id="welcome">
-    <string name="game_name">Félicitations ! Vous vous êtes échappés du piège de la Reine.</string>
-    <string name="game_name">À vous d'améliorer le jeu à votre convenance.</string>
+    <string name="game_name">Félicitations ! Vous vous êtes échappés du piège du seigneur noir.</string>
+    <string name="game_name">Secteur sécurisé et démons noirs du chaos impurs nettoyés!</string>
+    <string name="game_name">Il ne peut y avoir de paix, tant que respirent les ennemis de l'Empereur.</string>
 </strings>

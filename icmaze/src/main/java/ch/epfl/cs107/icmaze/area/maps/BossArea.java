@@ -52,11 +52,11 @@ public class BossArea extends ICMazeArea{
      */
     public String getTitle(){return "ICMaze/Boss";}
 
-    @Override
     /**
      * draws the bossArea on the Canvas
      * @param canvas the canvas that is used for the drawing
      */
+    @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
     }

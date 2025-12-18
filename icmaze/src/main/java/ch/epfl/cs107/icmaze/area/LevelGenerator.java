@@ -11,7 +11,8 @@ import static ch.epfl.cs107.icmaze.RandomGenerator.rng;
  * Utility class for the procedural generation of a sequence of game levels, based on the wanted length.
  */
 public class LevelGenerator {
-    private final static int MINIMAL_LENGTH = 2; //the minimal possible number of levels in a game
+    private final static int MINIMAL_LENGTH = 0; //the minimal possible number of levels in a game
+    private final static int DEFAULT_NUMBER_OF_LEVELS = 2;
 
     /**
      * method, which generates a table of connected ICMazeAreas, with the provided length
@@ -23,6 +24,7 @@ public class LevelGenerator {
         if (length < MINIMAL_LENGTH){
             length = MINIMAL_LENGTH;
         }
+        length += DEFAULT_NUMBER_OF_LEVELS;
         ICMazeArea[] areas = new ICMazeArea[length]; //the table of ICMazeAreas that will be returned
         //Mapping of <int[] (level position), ICMazeArea (area at that position)>
         Map<int[], ICMazeArea> levelSetup = new HashMap<>();

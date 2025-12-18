@@ -1,8 +1,8 @@
 package ch.epfl.cs107.icmaze.actor.enemies;
 
 import ch.epfl.cs107.icmaze.actor.Health;
-import ch.epfl.cs107.icmaze.actor.ICMazePlayer;
 import ch.epfl.cs107.icmaze.RandomGenerator;
+import ch.epfl.cs107.icmaze.actor.ICMazePlayer;
 import ch.epfl.cs107.icmaze.area.ICMazeArea;
 import ch.epfl.cs107.icmaze.area.MazeArea;
 import ch.epfl.cs107.icmaze.handler.ICMazeInteractionVisitor;
@@ -17,9 +17,9 @@ import ch.epfl.cs107.play.math.Orientation;
 import ch.epfl.cs107.play.math.Transform;
 import ch.epfl.cs107.play.math.Vector;
 import ch.epfl.cs107.play.window.Canvas;
+import ch.epfl.cs107.icmaze.area.ICMazeArea.RestrictedPlayer;
 
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
@@ -41,7 +41,7 @@ public class LogMonster extends PathFinderEnemy implements Interactor {
     public enum State { SLEEPING, WANDERING, CHASING }
 
     private State state;
-    private ICMazePlayer memorizedTarget;
+    private RestrictedPlayer memorizedTarget;
     private boolean destroyed = false;
 
     private float reorientTimer;
@@ -69,11 +69,10 @@ public class LogMonster extends PathFinderEnemy implements Interactor {
         this.memorizedTarget = null;
         this.reorientTimer = 0f;
         this.stateTimer = STATE_TRANSITION_TIME;
-        ((MazeArea) getOwnerArea()).occupyCell(getCurrentMainCellCoordinates(), getCurrentMainCellCoordinates());
     }
 
     /** Le joueur est-il exactement devant le monstre ? */
-    private boolean isJustInFrontOf(ICMazePlayer player) {
+    private boolean isJustInFrontOf(RestrictedPlayer player) {
         DiscreteCoordinates myCell = getCurrentMainCellCoordinates();
         DiscreteCoordinates frontCell = myCell.jump(getOrientation().toVector());
         return frontCell.equals(player.getCurrentMainCellCoordinates());
@@ -116,7 +115,7 @@ public class LogMonster extends PathFinderEnemy implements Interactor {
         }
         // 2. de temps en temps, regarde s’il voit un joueur
         if (stateTimer <= 0f) {
-            ICMazePlayer target = findVisiblePlayer();
+            RestrictedPlayer target = findVisiblePlayer();
             if (target != null) {
                 memorizedTarget = target;
                 state = State.CHASING;
@@ -155,11 +154,6 @@ public class LogMonster extends PathFinderEnemy implements Interactor {
     }
 
     // ---------------- PATHFINDING / VISION ----------------
-    private void occupyNextCell(){
-        //renders the occupied cell inaccesible on the graph associated to the MazeArea and frees up the currently occupied tile
-        DiscreteCoordinates nextPos = getNextPosition(getOrientation());
-        ((MazeArea) getOwnerArea()).occupyCell(getCurrentMainCellCoordinates(), nextPos);
-    }
     @Override
     public Orientation getNextOrientation() {
         if (memorizedTarget == null) {
@@ -183,7 +177,7 @@ public class LogMonster extends PathFinderEnemy implements Interactor {
     }
 
     /** Renvoie un joueur visible dans le champ de vision, ou null. */
-    private ICMazePlayer findVisiblePlayer() {
+    private RestrictedPlayer findVisiblePlayer() {
         ICMazeArea area = (ICMazeArea) getOwnerArea();
         List<DiscreteCoordinates> fov = super.getFieldOfViewCells();
 

@@ -6,7 +6,6 @@ import ch.epfl.cs107.icmaze.actor.collectable.Pickaxe;
 import ch.epfl.cs107.icmaze.area.ICMazeArea;
 import ch.epfl.cs107.play.engine.actor.Background;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
-import ch.epfl.cs107.play.math.Orientation;
 import ch.epfl.cs107.play.window.Canvas;
 
 /**
@@ -29,7 +28,7 @@ public class Spawn extends ICMazeArea {
     @Override
     public void createArea(){
         registerActor(new Background(this, getAreaSize()));
-        //sets up the different sprites
+        //sets up the different collectibles in the spawn area
         super.addItem(new Pickaxe(this, new DiscreteCoordinates(5,4)));
         super.addItem(new Heart(this, new DiscreteCoordinates(4,5)));
         super.addItem(new Key(this, new DiscreteCoordinates(6,5), getKeyVal()));

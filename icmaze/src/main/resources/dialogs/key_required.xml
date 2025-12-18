@@ -1,5 +1,3 @@
 <strings id="welcome">
-    <string name="game_name">Vous ne pouvez pas passer par là sans avoir survécu au labyrinthe et à l'arène!</string>
-    <string name="game_name">Armez-vous de patience, de clés et de bâtons!</string>
-     <string name="game_name">Et surtout, entraidez-vous!</string>
+    <string name="game_name">Vous ne pouvez pas passer par là sans avoir survécu au labyrinthe! Procurez-vous une clé!</string>
 </strings>

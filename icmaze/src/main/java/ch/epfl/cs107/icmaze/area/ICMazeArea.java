@@ -1,10 +1,13 @@
 package ch.epfl.cs107.icmaze.area;
 
+import ch.epfl.cs107.icmaze.ICMaze;
 import ch.epfl.cs107.icmaze.actor.*;
 import ch.epfl.cs107.icmaze.actor.collectable.Heart;
 import ch.epfl.cs107.icmaze.handler.Damageable;
+import ch.epfl.cs107.icmaze.handler.ICMazeInteractionVisitor;
 import ch.epfl.cs107.play.areagame.actor.Interactable;
 import ch.epfl.cs107.play.areagame.area.Area;
+import ch.epfl.cs107.play.areagame.handler.AreaInteractionVisitor;
 import ch.epfl.cs107.play.engine.actor.Actor;
 import ch.epfl.cs107.play.io.FileSystem;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
@@ -14,6 +17,9 @@ import ch.epfl.cs107.play.window.Window;
 
 import java.util.ArrayList;
 
+/**
+ * Abstract class, which represents the concept of a basic game Area in this game
+ */
 public abstract class ICMazeArea extends Area  implements Logic {
     private final Portal[] portals = new Portal[AreaPortals.values().length];
     private ArrayList<Actor> runThrough; //Contains all entities in this area, for easy access
@@ -259,13 +265,47 @@ public abstract class ICMazeArea extends Area  implements Logic {
      * Method to obtain the current area's player actor
      * @return ICMazePlayer or null
      */
-    public ICMazePlayer getPlayer(){
+    public RestrictedPlayer getPlayer(){
         for (Actor actor : runThrough){
             if (actor.getClass() == ICMazePlayer.class){
-                return (ICMazePlayer) actor;
+                return new RestrictedPlayer((ICMazePlayer) actor);
             }
         }
         return null;
+    }
+
+    /**
+     * Nestled class, which represents a player actor with reduced functionalities,
+     * to preserve encapsulation, and to give access to the player's main features to LogMonster
+     */
+    public class RestrictedPlayer{
+        private ICMazePlayer player;
+        /**
+         * Constructor of the RestrictedPlayer class, sets its player attribute to the given one
+         * @param player the provided ICMazePlayer
+         */
+        public RestrictedPlayer(ICMazePlayer player){
+            this.player = player;
+        }
+
+        /**
+         * Runs the ICMazePlayer's getCurrentMainCellCoordinates method
+         */
+        public DiscreteCoordinates getCurrentMainCellCoordinates(){
+            return player.getCurrentMainCellCoordinates();
+        }
+
+        /**
+         * Runs the ICMazePlayer's damageActor method
+         * @param damage the damage to inflict to the player (int)
+         */
+        public void damageActor(int damage){
+            player.damageActor(damage);
+        }
+
+        public void acceptInteraction(AreaInteractionVisitor v, boolean isCellInteraction) {
+            ((ICMazeInteractionVisitor) v).interactWith(player , isCellInteraction);
+        }
     }
 
     /**
@@ -337,9 +377,7 @@ public abstract class ICMazeArea extends Area  implements Logic {
      * Method, which updates the current area
      */
     @Override
-    public void update(float deltaTime) {
-        super.update(deltaTime);
-    }
+    public void update(float deltaTime) {super.update(deltaTime);}
 
     /**
      * Method, which defines what happens, when the current area is launched

@@ -1,5 +1,6 @@
 package ch.epfl.cs107.icmaze.actor;
 
+import ch.epfl.cs107.icmaze.ICMaze;
 import ch.epfl.cs107.icmaze.actor.util.Cooldown;
 import ch.epfl.cs107.icmaze.handler.Damageable;
 import ch.epfl.cs107.play.areagame.actor.Interactable;
@@ -103,7 +104,9 @@ public abstract class ICMazeActor extends MovableAreaEntity implements Interacta
      * @param deltaTime the time interval (double)
      */
     public void update(float deltaTime) {
-        super.update(deltaTime);
+        if (!ICMaze.runningDialog() && !ICMaze.isGamePaused()){
+            super.update(deltaTime);
+        }
     }
 
     /**

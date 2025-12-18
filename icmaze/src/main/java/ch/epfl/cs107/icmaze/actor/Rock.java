@@ -86,15 +86,15 @@ public class Rock extends AreaEntity implements Damageable {
         }
     }
 
-    @Override
     /**
      * method, which draws the rock on the window's canvas
      * @param canvas the canvas on which the rock is drawn on
      */
+    @Override
     public void draw(Canvas canvas) {
         if (health.getHealth() > 0){
             if (recovering){ //handles the display of the rock, when it has been damaged
-                if (drawFrame % 3 == 0){ //handles the oscillating frames, when the rock is hit
+                if (drawFrame % 4 == 0){ //handles the oscillating frames, when the rock is hit
                     UI.draw(canvas);
                 }
                 drawFrame += 1;
@@ -116,11 +116,11 @@ public class Rock extends AreaEntity implements Damageable {
         }
     }
 
-    @Override
     /**
      * method, which updates the rock's state
      * @param deltaTime time variation
      */
+    @Override
     public void update(float deltaTime) {
         //handles the rock's imunity and regeneration phase, after having been hit
         if (recovering){
@@ -134,40 +134,40 @@ public class Rock extends AreaEntity implements Damageable {
         }
         super.update(deltaTime);
     }
-    @Override
     /**
      * method, which returns the cells that are occupied by the rock
      * @returns List<DiscreteCoordinates> - the list containing the rock's position
      */
+    @Override
     public List<DiscreteCoordinates> getCurrentCells() {
         return Collections.singletonList(getCurrentMainCellCoordinates());
     }
 
-    @Override
     /**
      * method, which returns whether the rock occupies the cell it is located in. Only true, if it hasn't been destroyed yet
      * @returns boolean - indicates whether it can be walked on or not
      */
+    @Override
     public boolean takeCellSpace() {return !destroyed;}
 
-    @Override
     /**
      * method, which returns whether the rock can be interacted with through cell interractions
      * @returns boolean - indicates whether it can respond to cell interractions - always false
      */
+    @Override
     public boolean isCellInteractable() {return false;}
 
-    @Override
     /**
      * method, which returns whether the rock can be interacted with through view interractions (whether it can be attacked)
      * @returns boolean - indicates whether it can respond to view interractions (Only true, if its health is positive)
      */
+    @Override
     public boolean isViewInteractable() {return health.getHealth() > 0;}
 
-    @Override
     /**
      * method, which only accepts incoming interraction requests, allowing the interractor to proceed with the interraction
      */
+    @Override
     public void acceptInteraction(AreaInteractionVisitor v, boolean isCellInteraction) {
         ((ICMazeInteractionVisitor) v).interactWith(this, isCellInteraction);
     }

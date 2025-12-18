@@ -17,10 +17,10 @@ public class MediumArea extends MazeArea {
         super(setKey, setDiff, "MediumArea");
     }
 
-    @Override
     /**
      * method, which does a graphical initialization of this area
      */
+    @Override
     public void createArea(){
         registerActor(new Background(this, getAreaSize()));  //creation of the background based on the area's size
         super.createArea();
@@ -28,10 +28,10 @@ public class MediumArea extends MazeArea {
         createLogMonsters(); //creates this area's logmonsters
     }
 
-    @Override
     /**
      * method, which returns the unique ID of this MediumArea
      * @return String - the unique ID of this LargeArea in the following format - ICMaze/MediumArea[key value]
      */
+    @Override
     public String getTitle(){return "ICMaze/MediumArea["+getKeyVal()+"]";}
 }
